@@ -49,16 +49,6 @@ sub HTMLRepresentationFromTemplate
     
     my $html = $self->HTMLRepresentation();
     
-    # If audio, we add audio tags
-    if ($self->{audio})
-    {
-        my $audiotpl = ReadFile('tpl/audio.tpl');
-        $html =~ s/<\/h2>/$audiotpl<\/h2>/g;
-        
-        my $incl = '<script type="text/javascript" src="/files/js/sagaplayer.js" defer="defer"></script>';
-        $html = $incl . $html;
-    }
-    
     my ($long_date, $iso_timestamp, $standard_date, $time, $theyear) = GetDate();
     my $tpl = ReadFile($tpl);
     $tpl =~ s/%%content%%/$html/gi;

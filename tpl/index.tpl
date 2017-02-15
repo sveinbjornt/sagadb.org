@@ -5,6 +5,8 @@
         <p><small><strong>saga</strong> n : <em>a narrative telling the adventures of a hero or a family; originally, a story of the families that settled Iceland and their descendants.</em></small></p>
 </div>
 
+<img src="/images/spjot.jpg" width="250" height="207" style="float:right; margin-left: 15px; margin-bottom: 10px;">
+
 <p>The Icelandic Saga Database is an online resource dedicated to the <strong>Sagas of the Icelanders</strong> -- a large body of medieval Icelandic literature. The sagas are prose histories describing events that took place amongst the Norse and Celtic inhabitants of Iceland during the period of the Icelandic Commonwealth in the 10th and 11th centuries AD.</p>
 
 <p>The Icelandic sagas are believed to have been written in the thirteenth and fourteenth centuries AD, perhaps originating in an oral tradition of storytelling.  While their facticity and authorship is for the most part unknown, they are a widely recognized gem of world literature thanks to their sparse, succinct prose style and balanced storytelling.  The sagas focus largely on history, especially genealogical and family history, and reflect the struggles and conflicts that arose amongst the second and third generations of Norse settlers in medieval Iceland -- a remote, decentralised society with a rich legal tradition but no organized executive power.</p>
