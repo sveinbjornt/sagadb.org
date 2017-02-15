@@ -17,13 +17,13 @@
     <div class="callout sbox frontpage-box">
           <h2>Popular sagas</h2>
           <ul>
-          <li><a href="/egils_saga">Egils saga</a></li>
-          <li><a href="/gisla_saga_surssonar">Gísla saga</a></li>
+          <li><a href="/egils_saga.is">Egils saga</a></li>
+          <li><a href="/gisla_saga_surssonar.is">Gísla saga</a></li>
           <!--<li><a href="/fostbraedra_saga">Fóstbræðra saga</a></li>-->
-          <li><a href="/hrafnkels_saga_freysgoda">Hrafnkels saga</a></li>
-          <li><a href="/brennu-njals_saga">Njáls saga</a></li>
-          <li><a href="/laxdaela_saga">Laxdæla saga</a></li>
-          <li><a href="/grettis_saga">Grettis saga</a></li>
+          <li><a href="/hrafnkels_saga_freysgoda.is">Hrafnkels saga</a></li>
+          <li><a href="/brennu-njals_saga.is">Njáls saga</a></li>
+          <li><a href="/laxdaela_saga.is">Laxdæla saga</a></li>
+          <li><a href="/grettis_saga.is">Grettis saga</a></li>
           </ul>        
     </div>
   </div>
