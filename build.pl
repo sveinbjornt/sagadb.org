@@ -186,7 +186,6 @@ foreach (@datafiles)
         print "\tCreating PDF file '$pdfpath'\n";
         my $cmd = "/usr/bin/perl html2pdf.pl '$htmlpath' '$pdfpath'";
         system($cmd);
-        #print $cmd . "\n";
     }
     
     # Convert to EPUB
@@ -236,7 +235,11 @@ foreach (@datafiles)
     $fcount++;
 }
 
-if (!$fcount) { print "0 files processed\n" and exit; }
+if (!$fcount) 
+{ 
+    print "0 files processed\n";
+    exit; 
+}
 
 ############## Create download archives ############
 
@@ -265,7 +268,7 @@ if ($opts{x} or $opts{a} or $opts{A})
     #system("zip -r $zipdir" . "all_sagas_xml.zip src")
 
     print "\tCreating SagaDB tools package...\n";
-    system("zip -r $zipdir" . "sagadb_tools.zip src tpl xml2txt.pl xml2xhtml.pl html2pdf.pl html2ps build.pl tpl SagaDB*.pm");
+    system("zip -r $zipdir" . "sagadb_tools.zip src tpl html2pdf.pl html2ps build.pl tpl SagaDB*.pm");
     
 }
 
