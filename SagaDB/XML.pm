@@ -34,6 +34,7 @@ use strict;
 use XML::Parser::Lite::Tree;
 use Data::Dumper;
 use SagaDB::Util;
+use Encode qw(decode encode);
 
 my %lang_chapters = (
                         "is" => "NUM. kafli",
@@ -108,7 +109,7 @@ sub ParseMetaData
             $value = $_->{content};
         }
         
-        $metadata{$key} = $value;        
+        $metadata{$key} = $value;
     }
     
     return \%metadata;
@@ -259,7 +260,9 @@ sub CreateEPUBAtPath
     my $epub = EBook::EPUB->new;
 
     # Set metadata: title/author/language/id
-    $epub->add_title($self->{metadata}->{title});
+    
+    my $decoded_title = decode('UTF-8', $self->{metadata}->{title});    
+    $epub->add_title($decoded_title);
     $epub->add_author("Anonymous");
     $epub->add_contributor("Icelandic Saga Database", [fileas => "Icelandic Saga Database", role => "edt"]);
     $epub->add_identifier("http://sagadb.org/" . $self->{metadata}->{basename}, "url");
@@ -273,10 +276,12 @@ sub CreateEPUBAtPath
     {
         $epub->add_date($self->{metadata}->{trans_date}, "creation");
     }
+    
     # Translator
     if (defined($self->{metadata}->{trans}))
     {
-        $epub->add_translator($self->{metadata}->{trans});
+        my $decoded_translname = decode('UTF-8', $self->{metadata}->{trans});
+        $epub->add_translator($decoded_translname);
     }
 
     # Rights, subject
@@ -407,7 +412,8 @@ sub CreateXHTMLChaptersInDirectory
     {
         if ($child->{name} eq 'chapter')
         {
-            push(@chapters, $self->XMLContentToHTML($child->{children}));
+            my @arr = ($child);
+            push(@chapters, $self->XMLContentToHTML(\@arr));
         }
     }
     
