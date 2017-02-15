@@ -13,7 +13,7 @@
     
     <link rel="stylesheet" type="text/css" href="/files/style.css">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i">
-    <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="/images/favicon.ico">
     
     <meta name="robots" content="index, follow, imageindex, archive">
     <meta name="googlebot" content="index, follow, imageindex, archive">
