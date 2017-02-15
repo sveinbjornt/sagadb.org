@@ -39,7 +39,7 @@ use strict;
 use File::Basename;
 use Encode::Guess;
 use SagaDB::Util;
-use Shell qw(cp);
+use Shell qw(cp rm);
 
 my $html2ps = "html2ps/html2ps";
 my $html2psConfig = "html2ps/sagadbconf";
@@ -47,65 +47,35 @@ my $html2psConfig = "html2ps/sagadbconf";
 # Need at least one argument
 if (scalar(@ARGV) < 1)
 {
-	print STDERR "Not enough arguments.\nhtml2pdf.pl src1 ... [dstfolder]";
-	exit(1);
+    print STDERR "Not enough arguments.\nhtml2pdf.pl src dst";
+    exit(1);
 }
 
 # If last argument is a folder, it's the destination folder
-my $lastarg = $ARGV[scalar(@ARGV)-1];
-my $folder = undef;
-if (-e $lastarg && ! -f $lastarg)
+my $infile = $ARGV[0];
+my $outfile = $ARGV[1];
+
+if ($infile !~ /\.html$/)
 {
-	$folder = $lastarg . "/";
-	pop @ARGV;
+    warn("Not an HTML file, skipping: $infile\n");
+    exit 1;
 }
 
-# Iterate through each file, convert from XML format to XHTML
-foreach my $file(@ARGV)
-{
-	my $htmlfile = $file;
-	
-	if ($htmlfile !~ /\.html$/)
-	{
-		warn("Not an HTML file, skipping: $htmlfile\n");
-		next;
-	}
-	
-	# Create out file name
-	my $outfile = $htmlfile;
-	$outfile =~ s/\.html$/\.pdf/i;
-	
-	if (defined($folder))
-	{
-		my($fn, $directory) = fileparse($outfile);
-		$outfile = $fn;
-		$outfile = $folder . $outfile;
-	}
-		
-	print "$htmlfile --> $outfile\n";
-	
-	# OK, let's check the encoding of the HTML file
-	#my $data = ReadFile($htmlfile);
-	#my $decoder = guess_encoding($data, 'latin1');
-    #die $decoder unless ref($decoder);
-    #my $res = $decoder->decode($data);
-    
-    # Convert UTF-8 to ISO-8859-1 for PDF generation,
-    # using iconv since html2ps can't handle UTF-8
-    
-    my $tmp = '/tmp/sagadb_tmp.html';
-    my $out_tmp = '/tmp/sagadb_tmp_out.html';
-	cp($htmlfile, $tmp);
-	if (! -e $tmp) { die("Could not create temporary file '$tmp'"); }
-	system("iconv -c -f UTF-8 -t ISO-8859-1 '$tmp' > '$out_tmp'");
-    
-	# Run through html2ps tool
-	my $cmd = "/usr/bin/perl $html2ps -f $html2psConfig '$out_tmp' | ps2pdf - '$outfile'";
-	#print "Running command '$cmd'\n";
-	system($cmd);
-	
-	# Remove temp files
-	rm($tmp, $out_tmp);
-}
+# Convert UTF-8 to ISO-8859-1 for PDF generation,
+# using iconv since html2ps can't handle UTF-8
+
+my $tmp = '/tmp/sagadb_tmp.html';
+my $out_tmp = '/tmp/sagadb_tmp_out.html';
+cp($infile, $tmp);
+if (! -e $tmp) { die("Could not create temporary file '$tmp'"); }
+system("iconv -c -f UTF-8 -t ISO-8859-1 '$tmp' > '$out_tmp'");
+
+# Run through html2ps tool
+my $cmd = "/usr/bin/perl $html2ps -f $html2psConfig '$out_tmp' | pstopdf -i -o '$outfile'";
+#print "Running command '$cmd'\n";
+system($cmd);
+
+# Remove temp files
+#rm($tmp, $out_tmp);
 
 

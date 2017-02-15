@@ -184,7 +184,7 @@ foreach (@datafiles)
     if ($opts{p} or $opts{A})
     {
         print "\tCreating PDF file '$pdfpath'\n";
-        my $cmd = "perl html2pdf.pl '$htmlpath' '$pdfdir'";
+        my $cmd = "/usr/bin/perl html2pdf.pl '$htmlpath' '$pdfpath'";
         system($cmd);
         #print $cmd . "\n";
     }

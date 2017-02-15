@@ -22,11 +22,8 @@
   footer {               /* Running page footer */
  /*   center: "- $N -";*/      /* Page number */
   }
-  header {
-    
-  }
+
   option {
-    toc: hb;               /* Generate a table of contents, based on headings */
     titlepage: 1;         /* Generate a title page */
 	encoding: ISO-8859-1;
 /*    hyphenate: 1;*/
@@ -43,4 +40,3 @@
   }
 }
 
-P { text-align: justify }
