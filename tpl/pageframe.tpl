@@ -28,7 +28,7 @@
     <meta property="og:title" content="%%title%% - Icelandic Saga Database">
     <meta property="og:site_name" content="Icelandic Saga Database"> 
     <meta property="og:type" content="article">
-    <meta property="og:image" content="http://dev.sagadb.org/images/egill-og.jpg">    
+    <meta property="og:image" content="http://dev.sagadb.org/images/sagadb-spjot-opengraph.jpg">    
     
   </head>
   <body>
