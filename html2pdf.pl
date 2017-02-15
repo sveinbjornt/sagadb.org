@@ -1,9 +1,6 @@
 #!/usr/bin/perl
 #
 # html2pdf - Convert SagaDB HTML to PDF format
-#
-# Defaults to creating the files in same dir as HTML
-# Optionally specify destination folder as last arg
 #      
 # NOTE:  Will only work on Mac OS X systems due to dependence on the pstopdf tool
 #
@@ -36,16 +33,14 @@
 #
 
 use strict;
-use File::Basename;
-use Encode::Guess;
 use SagaDB::Util;
 use Shell qw(cp rm);
 
 my $html2ps = "html2ps/html2ps";
 my $html2psConfig = "html2ps/sagadbconf";
 
-# Need at least one argument
-if (scalar(@ARGV) < 1)
+# Need at least two arguments
+if (scalar(@ARGV) < 2)
 {
     print STDERR "Not enough arguments.\nhtml2pdf.pl src dst";
     exit(1);
@@ -76,6 +71,5 @@ my $cmd = "/usr/bin/perl $html2ps -f $html2psConfig '$out_tmp' | pstopdf -i -o '
 system($cmd);
 
 # Remove temp files
-#rm($tmp, $out_tmp);
-
+rm($tmp, $out_tmp);
 
