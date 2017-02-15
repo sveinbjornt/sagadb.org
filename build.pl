@@ -118,69 +118,69 @@ closedir(SRCDIR);
 # Iterate through files, convert
 foreach (@datafiles)
 {
-	# Ignore all hidden or non-xml files
-    if ($_ !~ m/\.xml$/ || $_ =~ m/^\./ || -d $_) { next; }	
+    # Ignore all hidden or non-xml files
+    if ($_ !~ m/\.xml$/ || $_ =~ m/^\./ || -d $_) { next; }    
 
-	# Get basename and saganame
-	# basename is SAGANAME.ISOLANG
-	my $basename = $_;
-	$basename =~ s/\.xml$//g; #Remove xml suffix
-	my($fn, $directory, $suffix) = fileparse($basename,  qr/\.[^.]*/);
-	$basename = $fn . "$suffix";
-	my $saganame = $fn;
-	
-	if ($opts{n} and $opts{n} !~ m/$basename/ and $opts{n} ne 'all') { next; }
-	
-	print "Processing '$basename'" . "\n";
+    # Get basename and saganame
+    # basename is SAGANAME.ISOLANG
+    my $basename = $_;
+    $basename =~ s/\.xml$//g; #Remove xml suffix
+    my($fn, $directory, $suffix) = fileparse($basename,  qr/\.[^.]*/);
+    $basename = $fn . "$suffix";
+    my $saganame = $fn;
     
-	# Read in and parse XML file
-	my $path = $srcdir . $_;
-	print "\tParsing XML source file '$path'\n";
-	my $xml_data = ReadFile($path);	
-	my $sdbxml = new SagaDB::HTML($xml_data);
-	$sdbxml->{metadata} = $sdbxml->ParseMetaData();
-	
-	# Get meta-data info 
-	my $isolang = $sdbxml->{metadata}->{language_iso};
-	my $title = $sdbxml->{metadata}->{title};
-	my $lang = $sdbxml->{metadata}->{language};
-	
-	# outfile names
-	my $htmlpath = $htmldir . "$basename.html";
-	my $txtpath = $textdir . "$basename.txt";
-	my $pdfpath = $pdfdir . "$basename.pdf";
-	my $epubpath = $epubdir . "$basename.epub";
-	my $audiopath = $audiodir . "$basename/";
-	
-	# Note the language
-	if (!defined($saga_lang{$saganame}))
-	{
-		my @arr = ();
-		$saga_lang{$saganame} = \@arr;
-	}
+    if ($opts{n} and $opts{n} !~ m/$basename/ and $opts{n} ne 'all') { next; }
+    
+    print "Processing '$basename'" . "\n";
+    
+    # Read in and parse XML file
+    my $path = $srcdir . $_;
+    print "\tParsing XML source file '$path'\n";
+    my $xml_data = ReadFile($path);    
+    my $sdbxml = new SagaDB::HTML($xml_data);
+    $sdbxml->{metadata} = $sdbxml->ParseMetaData();
+    
+    # Get meta-data info 
+    my $isolang = $sdbxml->{metadata}->{language_iso};
+    my $title = $sdbxml->{metadata}->{title};
+    my $lang = $sdbxml->{metadata}->{language};
+    
+    # outfile names
+    my $htmlpath = $htmldir . "$basename.html";
+    my $txtpath = $textdir . "$basename.txt";
+    my $pdfpath = $pdfdir . "$basename.pdf";
+    my $epubpath = $epubdir . "$basename.epub";
+    my $audiopath = $audiodir . "$basename/";
+    
+    # Note the language
+    if (!defined($saga_lang{$saganame}))
+    {
+        my @arr = ();
+        $saga_lang{$saganame} = \@arr;
+    }
 
-	my %info;
+    my %info;
     $info{language_iso} = $isolang;
     $info{basename} = $basename;
     $info{language} = $lang;
     $info{title} = $title;
     push(@{$saga_lang{$saganame}}, \%info);
     
-	# Convert to plain text
-	if ($opts{t} or $opts{a} or $opts{A})
-	{
-	    print "\tCreating Plain Text file '$txtpath'\n";
-	    $sdbxml->WritePlainTextRepresentationToFile($txtpath);
-	}
-	
-	# Convert to HTML
+    # Convert to plain text
+    if ($opts{t} or $opts{a} or $opts{A})
+    {
+        print "\tCreating Plain Text file '$txtpath'\n";
+        $sdbxml->WritePlainTextRepresentationToFile($txtpath);
+    }
+    
+    # Convert to HTML
     if ($opts{h} or $opts{a} or $opts{A})
     {
         print "\tCreating HTML file '$htmlpath'\n";
         $sdbxml->WriteHTMLRepresentationToFile($htmlpath);
     }
-	
-	# Convert to PDF
+    
+    # Convert to PDF
     if ($opts{p} or $opts{A})
     {
         print "\tCreating PDF file '$pdfpath'\n";
@@ -188,33 +188,33 @@ foreach (@datafiles)
         system($cmd);
         #print $cmd . "\n";
     }
-	
-	# Convert to EPUB
+    
+    # Convert to EPUB
     if ($opts{e} or $opts{A})
     {
         print "\tCreating EPUB file '$epubpath'\n";
         $sdbxml->CreateEPUBAtPath($epubpath);
     }
-	
-	# Create spoken audio files
-	if ($opts{v} or $opts{A})
-	{
-	    print "\tCreating spoken audio files\n";
-	    if ($isolang ne 'en')
-	    {
-	        print "\t\tSkipping, only English supported...\n";
-	    }
-	    
-	    $sdbxml->CreateChapterAudioFilesInDirectory($audiopath);
-	}
-	
-	# This adds audio link to chapter headings
+    
+    # Create spoken audio files
+    if ($opts{v} or $opts{A})
+    {
+        print "\tCreating spoken audio files\n";
+        if ($isolang ne 'en')
+        {
+            print "\t\tSkipping, only English supported...\n";
+        }
+        
+        $sdbxml->CreateChapterAudioFilesInDirectory($audiopath);
+    }
+    
+    # This adds audio link to chapter headings
     if (-e $audiopath)
     {
         $sdbxml->{audio} = 1;
     }
-	
-	# Create website pages
+    
+    # Create website pages
     if ($opts{m} or $opts{a} or $opts{A})
     {
         # Create saga website page
@@ -232,8 +232,8 @@ foreach (@datafiles)
         symlink($basename . ".cite.html", $pagesdir . $basename . ".cite")
     }
     
-	print "\n";
-	$fcount++;
+    print "\n";
+    $fcount++;
 }
 
 if (!$fcount) { print "0 files processed\n" and exit; }

@@ -41,7 +41,7 @@
             <li><a href="downloads">Downloads</a></li>
             <li><a href="about">About</a></li>
           </ul>
-      </div>	
+      </div>    
             
     <div class="content row">
         <div class="small-12 medium-9 medium-centered columns">
