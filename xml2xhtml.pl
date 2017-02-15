@@ -6,7 +6,7 @@
 # Defaults to creating the HTML files in same dir as XML
 # Specify folder as last argument if you wish
 #
-#  Copyright (c) 2007, Icelandic Saga Database (Sveinbjorn Thordarson)
+#  Copyright (c) 2007 Icelandic Saga Database (Sveinbjorn Thordarson)
 #  All rights reserved.
 #  
 #  BSD License

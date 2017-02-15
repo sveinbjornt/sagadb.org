@@ -32,7 +32,7 @@ package SagaDB::Util;
 
 use strict;
 use base "Exporter";
-our @EXPORT = qw(ReadFile WriteFile HumanDateFromTimestamp GetDate);
+our @EXPORT = qw(ReadFile WriteFile GetDate);
 
 sub ReadFile
 {
@@ -61,8 +61,9 @@ sub WriteFile
 
 sub GetDate 
 {
-    my(@days)  = ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
-    my(@months) =    ('January', 'February', 'March', 'April', 'May', 'June','July', 'August', 'September', 'October', 'November', 'December');
+    my(@days) = ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+    my(@months) = ('January', 'February', 'March', 'April', 'May', 'June',
+                   'July', 'August', 'September', 'October', 'November', 'December');
 
     my($sec,$min,$hour,$mday,$mon,$year,$wday) = (gmtime(time))[0,1,2,3,4,5,6];
     my($thetime) = sprintf("%02d:%02d:%02d",$hour,$min,$sec);
@@ -71,27 +72,14 @@ sub GetDate
     my($longd) = "$days[$wday], $months[$mon] $mday, $year.";
     $mon++;
     
-    if ($mday < 10)    {    $mday    = "0$mday";   }
-    if ($mon < 10)    {    $mon     = "0$mon";       }
-    if ($hour < 10) {    $hour    = "0$hour";   }
-    if ($min < 10)  {    $min     = "0$min";       }
-    if ($sec < 10)  {   $sec     = "0$sec";    }
+    if ($mday < 10) {   $mday = "0$mday";   }
+    if ($mon < 10)  {   $mon = "0$mon";     }
+    if ($hour < 10) {   $hour = "0$hour";   }
+    if ($min < 10)  {   $min = "0$min";     }
+    if ($sec < 10)  {   $sec = "0$sec";     }
         
     return ($longd, "$year-$mon-$mday-$hour-$min-$sec", "$mday.$mon.$year", $thetime, $year);
 }
-
-# sub HumanDateFromTimestamp
-# {
-#     my(@months) = ('January', 'February', 'March', 'April', 'May', 'June','July', 'August', 'September', 'October', 'November', 'December');
-#     my(@days)   =   ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
-#     my($timestamp) = @_;
-#     
-#     if ($timestamp !~ m/\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d/) {   return "Not available"; }
-#     
-#     my($year,$month,$mday,$hour,$min,$sec) = split(/\-/, $timestamp);
-#     my($human_date) = "$hour:$min:$sec $months[$month-1] $mday $year";
-#     return $human_date;
-# }
 
 1;
 

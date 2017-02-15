@@ -7,7 +7,7 @@
 #      
 # NOTE:  Will only work on Mac OS X systems due to dependence on the pstopdf tool
 #
-#  Copyright (c) 2007, Icelandic Saga Database (Sveinbjorn Thordarson)
+#  Copyright (c) 2007 Icelandic Saga Database (Sveinbjorn Thordarson)
 #  All rights reserved.
 #  
 #  BSD License

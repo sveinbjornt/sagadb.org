@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #      
-#  Copyright (c) 2007, Icelandic Saga Database (Sveinbjorn Thordarson)
+#  Copyright (c) 2007 Icelandic Saga Database (Sveinbjorn Thordarson)
 #  All rights reserved.
 #  
 #  BSD License
