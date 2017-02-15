@@ -36,48 +36,48 @@ our @EXPORT = qw(ReadFile WriteFile HumanDateFromTimestamp GetDate);
 
 sub ReadFile
 {
-	my $file = shift @_;
-	
-	open(FILE, $file) or die("Couldn't open file '$file' for reading");
-	my $data;
-	while (<FILE>)
-	{
-		$data .= $_;
-	}
-	close(FILE);
-	return $data;
+    my $file = shift @_;
+    
+    open(FILE, $file) or die("Couldn't open file '$file' for reading");
+    my $data;
+    while (<FILE>)
+    {
+        $data .= $_;
+    }
+    close(FILE);
+    return $data;
 }
 
 sub WriteFile
 {
-	my $file = shift @_;
-	my $data = shift @_;
-	
-	#print "Writing file '$file'\n";
-	open(FILE, "+>$file") or die("Couldn't open file '$file' for writing.");
-	print FILE $data;
-	close(FILE);
+    my $file = shift @_;
+    my $data = shift @_;
+    
+    #print "Writing file '$file'\n";
+    open(FILE, "+>$file") or die("Couldn't open file '$file' for writing.");
+    print FILE $data;
+    close(FILE);
 }
 
 sub GetDate 
 {
     my(@days)  = ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
-    my(@months) =	('January', 'February', 'March', 'April', 'May', 'June','July', 'August', 'September', 'October', 'November', 'December');
+    my(@months) =    ('January', 'February', 'March', 'April', 'May', 'June','July', 'August', 'September', 'October', 'November', 'December');
 
     my($sec,$min,$hour,$mday,$mon,$year,$wday) = (gmtime(time))[0,1,2,3,4,5,6];
     my($thetime) = sprintf("%02d:%02d:%02d",$hour,$min,$sec);
     $year += 1900;
 
     my($longd) = "$days[$wday], $months[$mon] $mday, $year.";
-	$mon++;
-	
-	if ($mday < 10)	{	$mday    = "0$mday";   }
-	if ($mon < 10)	{	$mon     = "0$mon";	   }
-	if ($hour < 10) {	$hour    = "0$hour";   }
-	if ($min < 10)  {	$min     = "0$min";	   }
-	if ($sec < 10)  {   $sec     = "0$sec";    }
-		
-	return ($longd, "$year-$mon-$mday-$hour-$min-$sec", "$mday.$mon.$year", $thetime, $year);
+    $mon++;
+    
+    if ($mday < 10)    {    $mday    = "0$mday";   }
+    if ($mon < 10)    {    $mon     = "0$mon";       }
+    if ($hour < 10) {    $hour    = "0$hour";   }
+    if ($min < 10)  {    $min     = "0$min";       }
+    if ($sec < 10)  {   $sec     = "0$sec";    }
+        
+    return ($longd, "$year-$mon-$mday-$hour-$min-$sec", "$mday.$mon.$year", $thetime, $year);
 }
 
 # sub HumanDateFromTimestamp
@@ -94,6 +94,5 @@ sub GetDate
 # }
 
 1;
-
 
 __END__

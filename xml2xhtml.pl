@@ -42,8 +42,8 @@ use File::Basename;
 # Need at least one argument
 if (scalar(@ARGV) < 1)
 {
-	print STDERR "Not enough arguments.\nxml2xhtml.pl src1 ... [dstfolder]";
-	exit(1);
+    print STDERR "Not enough arguments.\nxml2xhtml.pl src1 ... [dstfolder]";
+    exit(1);
 }
 
 # If last argument is a folder, it's the destination folder
@@ -51,44 +51,44 @@ my $lastarg = $ARGV[scalar(@ARGV)-1];
 my $folder = undef;
 if (-e $lastarg && ! -f $lastarg)
 {
-	$folder = $lastarg . "/";
-	pop @ARGV;
+    $folder = $lastarg . "/";
+    pop @ARGV;
 }
 
 # Iterate through each file, convert from XML format to XHTML
 foreach my $file(@ARGV)
 {
-	my $xmlfile = $file;
-	
-	if (! -e $xmlfile)
-	{
-	    warn("File does not exist, skipping: $xmlfile\n");
-	    next;
-	}
-	
-	if ($xmlfile !~ /\.xml$/)
-	{
-		warn("Not an XML file, skipping: $xmlfile\n");
-		next;
-	}
-	
-	# Create out file name
-	my $outfile = $xmlfile;
-	$outfile =~ s/\.xml$/\.html/i;
-	
-	if (defined($folder))
-	{
-		my($fn, $directory) = fileparse($outfile);
-		$outfile = $fn;
-		$outfile = $folder . $outfile;
-	}
-	
-	# Read data from file
-	my $xml_data = ReadFile($xmlfile);
-		
-	my $sdbxml = new SagaDB::XML($xml_data);
-		
-	$sdbxml->WriteHTMLRepresentationToFile($outfile);	
+    my $xmlfile = $file;
+    
+    if (! -e $xmlfile)
+    {
+        warn("File does not exist, skipping: $xmlfile\n");
+        next;
+    }
+    
+    if ($xmlfile !~ /\.xml$/)
+    {
+        warn("Not an XML file, skipping: $xmlfile\n");
+        next;
+    }
+    
+    # Create out file name
+    my $outfile = $xmlfile;
+    $outfile =~ s/\.xml$/\.html/i;
+    
+    if (defined($folder))
+    {
+        my($fn, $directory) = fileparse($outfile);
+        $outfile = $fn;
+        $outfile = $folder . $outfile;
+    }
+    
+    # Read data from file
+    my $xml_data = ReadFile($xmlfile);
+        
+    my $sdbxml = new SagaDB::XML($xml_data);
+        
+    $sdbxml->WriteHTMLRepresentationToFile($outfile);    
 }
 
 

@@ -39,17 +39,17 @@ our @EXPORT = qw();
 
 sub HTMLRepresentationFromTemplate
 {
-	my $self = shift @_;
-	my $tpl = shift @_;
-	
-	if (!defined($self->{metadata}))
-	{
-		$self->{metadata} = $self->ParseMetaData();
-	}
-	
-	my $html = $self->HTMLRepresentation();
-	
-	# If audio, we add audio tags
+    my $self = shift @_;
+    my $tpl = shift @_;
+    
+    if (!defined($self->{metadata}))
+    {
+        $self->{metadata} = $self->ParseMetaData();
+    }
+    
+    my $html = $self->HTMLRepresentation();
+    
+    # If audio, we add audio tags
     if ($self->{audio})
     {
         my $audiotpl = ReadFile('tpl/audio.tpl');
@@ -57,43 +57,41 @@ sub HTMLRepresentationFromTemplate
         
         my $incl = '<script type="text/javascript" src="/files/js/sagaplayer.js" defer="defer"></script>';
         $html = $incl . $html;
-	}
-	
-	my ($long_date, $iso_timestamp, $standard_date, $time, $theyear) = GetDate();
-	my $tpl = ReadFile($tpl);
-	$tpl =~ s/%%content%%/$html/gi;
+    }
+    
+    my ($long_date, $iso_timestamp, $standard_date, $time, $theyear) = GetDate();
+    my $tpl = ReadFile($tpl);
+    $tpl =~ s/%%content%%/$html/gi;
     $tpl =~ s/%%datecreated%%/$iso_timestamp/gi;
     $tpl =~ s/%%title%%/$self->{metadata}->{title}/gi;
-	$tpl =~ s/%%basename%%/$self->{metadata}->{basename}/gi;
+    $tpl =~ s/%%basename%%/$self->{metadata}->{basename}/gi;
 
-	return $tpl;
+    return $tpl;
 }
 
 sub HTMLCitationRepresentationFromTemplate
 {
-	my $self = shift @_;
-	my $tpl = shift @_;
-	
-	# Make sure to parse metadata
-	if (!defined($self->{metadata}))
-	{
-		$self->{metadata} = $self->ParseMetaData();
-	}
-	my %metadata = %{$self->{metadata}};
-	
-	my $html_template = ReadFile($tpl) or die("Couldn't read template $tpl");
+    my $self = shift @_;
+    my $tpl = shift @_;
+    
+    # Make sure to parse metadata
+    if (!defined($self->{metadata}))
+    {
+        $self->{metadata} = $self->ParseMetaData();
+    }
+    my %metadata = %{$self->{metadata}};
+    
+    my $html_template = ReadFile($tpl) or die("Couldn't read template $tpl");
 
-	# Replace all variables in template w. metadata info
-	foreach my $key(sort(keys(%metadata)))
-	{
-		$html_template =~ s/%%$key%%/$metadata{$key}/gi;
-	}
+    # Replace all variables in template w. metadata info
+    foreach my $key(sort(keys(%metadata)))
+    {
+        $html_template =~ s/%%$key%%/$metadata{$key}/gi;
+    }
 
-	return $html_template;
+    return $html_template;
 }
 
-
 1;
-
 
 __END__
