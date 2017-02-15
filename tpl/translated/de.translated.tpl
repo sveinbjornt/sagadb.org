@@ -1,0 +1,1 @@
+%%trans_date%% Übersetzung ins Deutsch von %%trans%% der isländischen "%%title_orig%%.

@@ -1,0 +1,46 @@
+/* This is a sample configuration file for html2ps. You may try using this
+   to convert the documentation file that comes with html2ps (html2ps.html).
+   Issue the command:
+
+     html2ps -f sample -o html2ps.ps html2ps.html
+
+   This should create a PostScript file html2ps.ps formatted based on the
+   information below.
+*/
+
+@html2ps {
+  extrapage: 0;
+/*  number: 1;*/
+  
+  header {               /* Running page header */
+    odd-left: $T;          /* Document title */
+    odd-right: $H;         /* Current main heading */
+    even-left: $H;         /* Ditto */
+    even-right: "$[author]"; /* Document author (from <META NAME="Author"...>) */
+    even-left: "Icelandic Saga Database";
+  }
+  footer {               /* Running page footer */
+ /*   center: "- $N -";*/      /* Page number */
+  }
+  header {
+    
+  }
+  option {
+    toc: hb;               /* Generate a table of contents, based on headings */
+    titlepage: 1;         /* Generate a title page */
+	encoding: ISO-8859-1;
+/*    hyphenate: 1;*/
+  }
+  titlepage {           /* The title page content: document title, author and
+                           creation date */
+    content: "<DIV align=center><H1><BIG>$T</BIG></H1>$[author]";
+  }
+ /* seq-number: 1;  */        /* Automatic numbering of headings */
+
+  toc
+  {
+	heading: "<h3>Index</h3>";
+  }
+}
+
+P { text-align: justify }

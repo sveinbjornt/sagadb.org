@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+
+use strict;
+use File::Copy;
+use File::Path;
+use Cwd 'chdir';
+use vars qw(%dest $odir $curr $file $dir);
+
+%dest = ();
+$0 =~ /(.*)backout$/i;
+chdir $1 if $1;
+$curr = $ENV{PWD};
+open DAT, 'backout.dat' || die "Cannot open backout.dat\n";
+chomp ($odir =<DAT>);
+chdir $odir;
+if($ENV{PWD} eq $curr) {die "Cannot chdir to backout directory $odir\n"};
+
+while (($file, $dir) = split /\s+/, <DAT>) {
+    unless(-r $file) {die "Cannot copy $file\n"};
+    unless(-w $dir)  {die "$dir is not writable\n"};
+    $dest{$file} = $dir;
+}
+close DAT;
+
+while (($file, $dir) = each %dest) {
+    copy $file => $dir or die "Cannot copy $file to $dir\n";
+}
+
+chdir $curr;
+rmtree "$odir", 0, 0;
+unlink 'backout.dat';

@@ -1,0 +1,2324 @@
+#!/usr/bin/wish
+
+################################################################################
+#
+# X-html2ps - A GUI frontend for html2ps (*), a HTML-to-PostScript converter.
+#
+# Copyright (C) 1997-2000 Jean-Philippe Argaud.
+#                         jp.argaud@iname.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+################################################################################
+# (*)  Copyright (C) 1995-2000 Jan Karrman, e-mail: jan@tdb.uu.se.             #
+#      (WWW location : http://www.tdb.uu.se/~jan/html2ps.html)                 #
+# (**) This program was done, for some parts, using Visual Tcl v1.10, a        #
+#      great and useful "Application Development Environment For Tcl/Tk"       #
+#      (WWW location : http://www.neuron.com/stewart/vtcl/)                    #
+################################################################################
+# xhtml2ps  -  Size : 84761 octets, Released : July 29, 2000                   #
+#              Without this line, sum -r : 07487    83                         #
+################################################################################
+
+
+################################################################################
+# This file contains four parts :
+# 1. the file selection box definition
+# 2. the printing box definition
+# 3. the configuration and useful commands
+# 4. the GUI procedures
+#
+# The part 1 can be reused independantly, part 2 need only part 1, part 3 need
+# part 1 and 2, the 4th part is the GUI definition using the three previous.
+#
+################################################################################
+#
+################################################################################
+# 1. FILE SELECTION BOX
+################################################################################
+  #
+  # Usage : FS_Box <default language> <default file name> <default filter>
+  #         The defaults are optionnal. The output is the complete filename
+  #         chosen, or nothing if Canceled. The language is the one chosen
+  #         for the messages, default being English.
+  #         Example : set file [FS_Box FR $guess_file $filter]
+  #
+  ##############################################################################
+  #
+proc FS_Box {{language "EN"} {default ""} {filter "*"}} {
+  global fsdata filename
+  #
+  # Initial default values
+  # ----------------------
+  set fsdata(language) $language
+  set fsdata(default)  $default
+  set fsdata(filename) [file tail $default]
+  set fsdata(dirname)  [pwd]
+  set fsdata(filter)   $filter
+  set fsdata(hidden)   0
+  #
+  FS_SetMsgs
+  #
+  # Bindings of default key actions
+  # -------------------------------
+  bind Entry <ButtonRelease-2> {}
+  bind Entry <Control-k>       " %W delete 0 end "
+  bind Entry <Left>            " FS_EntryCursor %W -1 "
+  bind Entry <Right>           " FS_EntryCursor %W 1 "
+  bind Entry <2>               { %W insert insert "[FS_GetXSelect]" }
+  bind Listbox <1>             {}
+  #
+  # Launching the GUI
+  # -----------------
+  FS_GUI
+  #
+}
+  #
+  ##############################################################################
+  #
+proc FS_GUI {} {
+  global fsdata filename
+  #
+  set w .fsl
+  #
+  # Global window definition
+  # ------------------------
+  catch {destroy $w}
+  toplevel    $w -class Toplevel
+  wm title    $w "$fsdata(ms:wintitle)"
+  wm iconname $w "$fsdata(ms:wintitle)"
+  wm minsize  $w 1 1
+  wm protocol $w WM_DELETE_WINDOW { }
+  #
+  # Listbox to select the directory and file
+  # ----------------------------------------
+  frame $w.l -borderwidth 2
+  pack [frame $w.l.d -borderwidth 0]\
+        -side left -expand 1 -fill both
+  pack [label $w.l.d.label -relief flat -borderwidth 2 \
+        -text "$fsdata(ms:directories) :" -anchor nw] \
+        -side top -expand 0 -fill both
+  pack [listbox $w.l.d.dirs -relief sunken -borderwidth 2 \
+        -yscrollcommand "$w.l.d.scrolldir set" -setgrid 1] \
+        -side left -expand 1 -fill both
+  pack [scrollbar $w.l.d.scrolldir -relief sunken \
+        -command "$w.l.d.dirs yview" -width 10] \
+        -side left -after $w.l.d.dirs -fill y
+  #
+  pack [frame $w.l.f -borderwidth 0]\
+        -side left -expand 1 -fill both
+  pack [label $w.l.f.label -relief flat -borderwidth 2 \
+        -text "$fsdata(ms:files) :" -anchor nw] \
+        -side top -expand 0 -fill both
+  pack [listbox $w.l.f.files -relief sunken -borderwidth 2 \
+        -yscrollcommand "$w.l.f.scrollfile set" -setgrid 1] \
+        -side right -expand 1 -fill both
+  pack [scrollbar $w.l.f.scrollfile -relief sunken \
+        -command "$w.l.f.files yview" -width 10] \
+        -side right -before $w.l.f.files -fill y
+  pack $w.l -side top -fill both -expand 1 -padx 3 -pady 5
+  #
+  # Directory name entry zone definition
+  # ------------------------------------
+  frame $w.d -borderwidth 2 -relief groove
+  pack [label $w.d.dirtext -text "$fsdata(ms:directory) : "] \
+        -side left -fill x -padx 1m -pady 2m
+  pack [entry $w.d.dirname -width 40 -relief sunken \
+        -bd 2 -textvariable fsdata(dirname) ] \
+        -side left -fill x -padx 1m -pady 2m -expand 1
+  pack $w.d -side top -fill both -padx 5 -pady 5
+  #
+  # Filters
+  # -------
+  frame $w.i -borderwidth 2 -relief groove
+  pack [checkbutton $w.i.hidden -text "$fsdata(ms:hiddenfil)" \
+        -variable fsdata(hidden) -command FS_ChangeDir] \
+        -side left -fill x -padx 1m -pady 2m
+  pack [label $w.i.lpatt -text "$fsdata(ms:filter) : "] \
+        -side right -fill x -padx 1m -pady 2m
+  pack [entry $w.i.filter -width 10  -relief sunken \
+        -bd 2 -textvariable fsdata(filter)] \
+        -side right -fill x -padx 1m -pady 2m -before $w.i.lpatt
+  pack $w.i -side top -fill both -padx 5 -pady 1
+  #
+  # Buttons
+  # -------
+  set f $w.butt
+  frame $f -borderwidth 2
+  pack  $f -side bottom -anchor w -expand 0 -fill x -padx 1m -pady 1m
+  #
+  pack [button $f.ok  -width 10 -text "$fsdata(ms:ok)" \
+        -command " FS_GetFile "] \
+        -anchor center -expand 0 -fill none -side left -padx 1m
+  pack [button $f.can -width 10 -text "$fsdata(ms:cancel)" \
+        -command "set filename \"$fsdata(default)\" ; FS_Exit "] \
+        -anchor center -expand 0 -fill none -side left -padx 1m
+  #
+  # Bindings of defaults key actions
+  # --------------------------------
+  bind $w.d.dirname <Return>          " FS_ChangeDir "
+  bind $w.l.d.dirs  <1>               " FS_GetSelection %W @%x,%y "
+  bind $w.l.f.files <1>               " FS_GetSelection %W @%x,%y "
+  bind $w.l.d.dirs  <Double-Button-1> " FS_GetDir %W @%x,%y "
+  bind $w.l.f.files <Double-Button-1> " FS_GetFile "
+  bind $w.i.filter <Return>           " FS_ChangeDir "
+  #
+  # Set default focus
+  # -----------------
+  set w .fsl
+  wm withdraw $w
+  update idletasks
+  set x [expr [winfo screenwidth $w]/2  - [winfo reqwidth $w]/2  ]
+  set y [expr [winfo screenheight $w]/2 - [winfo reqheight $w]/2 ]
+  wm geom $w +$x+$y
+  wm deiconify $w
+  set fsdata(oldFocus) [focus]
+  set fsdata(oldGrab)  [grab current $w]
+  if {$fsdata(oldGrab) != ""} {
+    set fsdata(grabStatus) [grab status $fsdata(oldGrab)]
+  }
+  grab $w
+  focus $w
+  #
+  FS_ChangeDir
+  #
+  tkwait variable filename
+  return $filename
+}
+  #
+  ##############################################################################
+  #
+proc FS_EntryCursor {w dir} {
+  set x [$w index insert]
+  set x [expr $x + $dir]
+  $w icursor $x
+}
+  #
+  ##############################################################################
+  #
+proc FS_GetXSelect { } {
+  set s ""   
+  catch {set s [selection get STRING]}
+  return "$s"
+}
+  #
+  ##############################################################################
+  #
+proc FS_ChangeDir { } {
+  global fsdata
+  #
+  cd $fsdata(dirname)
+  set w .fsl.l
+  $w.d.dirs delete 0 end
+  $w.f.files delete 0 end
+  if {$fsdata(hidden)} {
+    if {[catch {set allfiles [glob * .?*]}]} {return}
+  } else {
+    $w.d.dirs insert end ".."
+    if {[catch {set allfiles [glob *]}]} {return}
+  }
+  foreach i [lsort $allfiles] {
+    if { [file isdirectory $i] } {
+      $w.d.dirs insert end $i
+    } else {
+      if {[string match $fsdata(filter) $i]} {$w.f.files insert end $i}
+    }
+  }
+}
+  #
+  ##############################################################################
+  #
+proc FS_GetSelection {win pos} {
+  global fsdata
+  #
+  $win selection clear active
+  $win selection set [$win index $pos]
+  #
+  if {[string match $win ".fsl.l.f.files"]} {
+    set f [.fsl.l.f.files curselection]
+    set fsdata(filename) [.fsl.l.f.files get $f]
+  }
+}
+  #
+  ##############################################################################
+  #
+proc FS_GetDir {win pos} {
+  global fsdata
+  #
+  $win selection clear active
+  $win selection set [$win index $pos]
+  #
+  set f [.fsl.l.d.dirs curselection]
+  set d [.fsl.l.d.dirs get $f]
+  cd $d
+  set fsdata(dirname) [pwd]
+  #
+  FS_ChangeDir
+}
+  #
+  ##############################################################################
+  #
+proc FS_GetFile {} {
+  global fsdata filename
+  #
+  set s $fsdata(dirname)
+  set l [string length $s]
+  if {$l > 0} {set s ${s}/}
+  #
+  set dirfile "$s$fsdata(filename)"
+  if {[file exists $dirfile]} {
+    set filename "$s$fsdata(filename)"
+    FS_Exit
+  } else {
+    set filename ""
+  }
+  #
+}
+  #
+  ##############################################################################
+  #
+proc FS_Exit {} {
+  global fsdata
+  #
+  catch {focus $fsdata(oldFocus)}
+  destroy .fsl
+  if {$fsdata(oldGrab) != ""} {
+    if {$fsdata(grabStatus) == "global"} {
+      grab -global $fsdata(oldGrab)
+    } else {
+      grab $fsdata(oldGrab)
+    }
+  }
+}
+  #
+  ##############################################################################
+  #
+proc FS_SetMsgs {} {
+  global fsdata
+  #
+  # Check the choice
+  # ----------------
+  switch $fsdata(language) {
+    EN     {}
+    FR     {}
+    DE     {}
+    default { set fsdata(language) "EN" }
+  }
+  #
+  # Set messages
+  # ------------
+  switch $fsdata(language) {
+    EN { 
+        array set fsdata {
+          ms:wintitle     "File Selection Box"
+          ms:directories  "Directories"
+          ms:directory    "Directory"
+          ms:files        "Files"
+          ms:hiddenfil    "View hidden files"
+          ms:filter       "Filter"
+          ms:ok           "OK"
+          ms:cancel       "Cancel"
+        } }
+    FR { 
+        array set fsdata {
+          ms:wintitle     "Boite de Sélection de Fichiers"
+          ms:directories  "Répertoires"
+          ms:directory    "Répertoire"
+          ms:files        "Fichiers"
+          ms:hiddenfil    "Voir les fichiers cachés"
+          ms:filter       "Filtre"
+          ms:ok           "OK"
+          ms:cancel       "Annuler"
+        } }
+    DE { 
+        array set fsdata {
+          ms:wintitle     "Dateiauswahl"
+          ms:directories  "Verzeichnisse"
+          ms:directory    "Verzeichnis"
+          ms:files        "Dateien"
+          ms:hiddenfil    "Versteckte Dateien anzeigen"
+          ms:filter       "Filter"
+          ms:ok           "OK"
+          ms:cancel       "Abbruch"
+        } }
+  }
+  #
+}
+################################################################################
+# END OF FILE SELECTION BOX
+################################################################################
+#
+#
+################################################################################
+# 2. PRINTING BOX
+################################################################################
+  #
+  # Usage : PR_Box <language> <printing cmd> <file printing cmd> <file name>
+  #         The defaults are optionnal. The output is "yes" if the printing
+  #         is succesful, or "no" if Canceled. The language is the one chosen
+  #         for the messages, default being English.
+  #         Usage : set file [PR_Box]
+  #
+  # Rmq : this package requires the "fsbox" Tcl/Tk package
+  #
+  ##############################################################################
+  #
+proc PR_Box {{language "EN"} \
+             {printcmd "lp"} \
+             {filepcmd "exec cp"} \
+             {filename ""}} {
+  global prdata
+  #
+  # Initial default values
+  # ----------------------
+  set prdata(language) $language
+  set prdata(command)  $printcmd
+  set prdata(filepcmd) $filepcmd
+  set prdata(filename) $filename
+  array set prdata {
+    butwidth      10
+    labwidth      20
+    printed       0
+    dest          "PRTR"
+    printfile     "print.ps"
+  }
+  #
+  PR_SetMsgs
+  #
+  # Bindings of defaults key actions
+  # --------------------------------
+  bind Entry <ButtonRelease-2> {}
+  bind Entry <Control-k>       " %W delete 0 end "
+  bind Entry <Left>            " PR_EntryCursor %W -1 "
+  bind Entry <Right>           " PR_EntryCursor %W 1 "
+  bind Entry <2>               { %W insert insert "[PR_GetXSelect]" }
+  #
+  # Launching the GUI
+  # -----------------
+  PR_GUI
+  #
+}
+  #
+  ##############################################################################
+  #
+proc PR_GUI {} {
+  global prdata
+  #
+  set w .prn
+  set width $prdata(butwidth)
+  set wl    $prdata(labwidth)
+  #
+  # Global window definition
+  # ------------------------
+  catch {destroy $w}
+  toplevel    $w -class Toplevel
+  wm title    $w "$prdata(ms:wintitle)"
+  wm iconname $w "$prdata(ms:wintitle)"
+  wm minsize  $w 1 1
+  wm protocol $w WM_DELETE_WINDOW { }
+  #
+  set f $w.top
+  frame $f -borderwidth 2 -relief groove
+  pack  $f -side top -anchor w -expand 0 -fill x -padx 1m -pady 1m
+  #
+  # Printing output
+  # ---------------
+  set f $w.top.dest
+  frame $f -borderwidth 2
+  pack  $f -side top -anchor w -expand 0 -fill x -padx 1m -pady 1m
+  #
+  pack [label $f.lab1 -anchor e -text "$prdata(ms:printto) : " -width 25] \
+        -anchor center -expand 0 -fill none -side left
+  pack [radiobutton $f.rad1 -text $prdata(ms:printer) \
+        -variable prdata(dest) -value "PRTR"] \
+        -anchor center -expand 0 -fill none -side left
+  pack [radiobutton $f.rad2 -text $prdata(ms:file) \
+        -variable prdata(dest) -value "FILE"] \
+        -anchor center -expand 0 -fill none -side left
+  #
+  # Printing options
+  # ----------------
+  set f $w.top.opt1
+  frame $f -borderwidth 2
+  pack  $f -side top -anchor w -expand 0 -fill x -padx 1m -pady 1m
+  #
+  pack [label $f.lab1 -anchor e -text "$prdata(ms:command) : " -width 25] \
+        -anchor center -expand 0 -fill none -side left
+  pack [entry $f.ent1 -textvariable prdata(command) -width 15] \
+        -anchor center -expand 0 -fill none -side left
+  #
+  set f $w.top.opt2
+  frame $f -borderwidth 2
+  pack  $f -side top -anchor w -expand 0 -fill x -padx 1m -pady 1m
+  #
+  pack [label $f.lab2 -anchor e -text "$prdata(ms:file) : " -width 25] \
+        -anchor center -expand 0 -fill none -side left
+  pack [entry $f.ent2 -textvariable prdata(printfile) -width 40] \
+        -anchor center -expand 1 -fill x -side left 
+  pack [button $f.but2 -padx 5 -pady 4 -borderwidth 1 -text "..." \
+        -command {set prdata(printfile) [FS_Box $prdata(language) $prdata(printfile) "*.ps"]}] \
+        -anchor center -expand 0 -fill none -side left 
+  #
+  # Button definition
+  # -----------------
+  set f $w.butt
+  frame $f -borderwidth 2
+  pack  $f -side bottom -anchor w -expand 0 -fill x -padx 1m -pady 1m
+  #
+  pack [button $f.prn -width $width -text "OK" \
+        -command { set prdata(printed) 1 ; PR_Exit } ] \
+        -anchor center -expand 0 -fill none -side left -padx 1m
+  pack [button $f.can -width $width -text $prdata(ms:cancel) \
+        -command { set prdata(printed) 0  ; PR_Exit }] \
+        -anchor center -expand 0 -fill none -side left -padx 1m
+  #
+  # Set default focus
+  # -----------------
+  wm withdraw $w
+  update idletasks
+  set x [expr [winfo screenwidth $w]/2  - [winfo reqwidth $w]/2  ]
+  set y [expr [winfo screenheight $w]/2 - [winfo reqheight $w]/2 ]
+  wm geom $w +$x+$y
+  wm deiconify $w
+  set prdata(oldFocus) [focus]
+  set prdata(oldGrab)  [grab current $w]
+  if {$prdata(oldGrab) != ""} {
+    set prdata(grabStatus) [grab status $prdata(oldGrab)]
+  }
+  grab $w
+  focus $w
+  #
+  tkwait variable prdata(printed)
+  return $prdata(printed)  
+}
+  #
+  ##############################################################################
+  #
+proc PR_EntryCursor {w dir} {
+  set x [$w index insert]
+  set x [expr $x + $dir]
+  $w icursor $x
+}
+  #
+  ##############################################################################
+  #
+proc PR_GetXSelect { } {
+  set s ""   
+  catch {set s [selection get STRING]}
+  return "$s"
+}
+  #
+  ##############################################################################
+  #
+proc PR_Exit {} {
+  global prdata
+  #
+  catch {focus $prdata(oldFocus)}
+  destroy .prn
+  if {$prdata(oldGrab) != ""} {
+    if {$prdata(grabStatus) == "global"} {
+      grab -global $prdata(oldGrab)
+    } else {
+      grab $prdata(oldGrab)
+    }
+  }
+  #
+  if {$prdata(printed)} {
+    switch $prdata(dest) {
+      PRTR {set r [eval exec $prdata(command) $prdata(filename)]}
+      FILE {eval $prdata(filepcmd) $prdata(filename) $prdata(printfile)
+            set r "$prdata(ms:prtofile) $prdata(printfile)"}
+    }
+    PR_MBox -icon info -type ok -message $r
+  }
+}
+  #
+  ##############################################################################
+  #
+proc PR_MBox { args } {
+  global prdata ChoosenButton
+  #
+  # Initial default values
+  # ----------------------
+  set w .msb
+  set textfont "-adobe-helvetica-bold-r-normal--*-120-*"
+  set specs {
+    {-icon    "" "" "info"}
+    {-message "" "" ""    }
+    {-title   "" "" " "   }
+    {-type    "" "" "ok"  }
+  }
+  array set options {
+    ok     { -width 6 -text OK             -command "set ChoosenButton ok"     }
+    yes    { -width 6 -text $prdata(yes)    -command "set ChoosenButton yes"    }
+    no     { -width 6 -text $prdata(no)     -command "set ChoosenButton no"     }
+    cancel { -width 6 -text $prdata(cancel) -command "set ChoosenButton cancel" }
+  }
+  #
+  # Initial configuration
+  # ---------------------
+  upvar #0 $w data
+  tclParseConfigSpec $w $specs "" $args
+  #
+  if {[lsearch {info warning error question} $data(-icon)] == -1} {
+    error "Invalid icon \"$data(-icon)\", must be \
+           error, info, question or warning"
+  }
+  #
+  case $data(-type) {
+    ok          { set messagebuttons "ok" }
+    okcancel    { set messagebuttons "ok cancel" }
+    yesno       { set messagebuttons "yes no" }
+    yesnocancel { set messagebuttons "yes no cancel" }
+    default     { error "Invalid type \"$data(-type)\", must be \ 
+                  ok, okcancel, yesno, yesnocancel"}
+  }
+  #
+  # Global window definition
+  # ------------------------
+  catch {destroy $w}
+  toplevel    $w -class Dialog
+  wm title    $w $data(-title)
+  wm iconname $w Dialog
+  wm minsize  $w 1 1
+  wm protocol $w WM_DELETE_WINDOW { }
+  #
+  option add *Dialog.msg.wrapLength 3i widgetDefault
+  #
+  # Text message area
+  # -----------------
+  frame $w.top -borderwidth 1 -relief groove
+  pack $w.top -side top -fill both -expand 1
+  #
+  if {$data(-icon) != ""} {
+    label $w.bitmap -bitmap $data(-icon)
+    pack $w.bitmap -in $w.top -side left -padx 3m -pady 3m
+  }
+  pack [label $w.msg -justify left -text $data(-message) -font $textfont] \
+       -in $w.top -side right -expand 1 -fill both -padx 3m -pady 3m
+  #
+  # Buttons area
+  # ------------
+  frame $w.bot -borderwidth 1 -relief groove
+  pack $w.bot -side bottom -fill both
+  #
+  foreach name $messagebuttons {
+    eval button $w.$name $options($name)
+    pack $w.$name -in $w.bot -side left -expand 1 -padx 1m -pady 1m -ipadx 3m
+  }
+  #
+  # Launching the GUI
+  # -----------------
+  wm withdraw $w
+  update idletasks
+  set x [expr [winfo screenwidth $w]/2 - [winfo reqwidth $w]/2 \
+    - [winfo vrootx [winfo parent $w]]]
+  set y [expr [winfo screenheight $w]/2 - [winfo reqheight $w]/2 \
+    - [winfo vrooty [winfo parent $w]]]
+  wm geom $w +$x+$y
+  wm deiconify $w
+  set oldFocus [focus]
+  set oldGrab [grab current $w]
+  if {$oldGrab != ""} { set grabStatus [grab status $oldGrab] }
+  grab $w
+  focus $w
+  tkwait variable ChoosenButton
+  catch {focus $oldFocus}
+  destroy $w
+  if {$oldGrab != ""} {
+    if {$grabStatus == "global"} {
+      grab -global $oldGrab
+    } else {
+      grab $oldGrab
+    }
+  }
+  #
+  return $ChoosenButton
+}
+  #
+  ##############################################################################
+  #
+proc PR_SetMsgs {} {
+  global prdata
+  #
+  # Check the choice
+  # ----------------
+  switch $prdata(language) {
+    EN     {}
+    FR     {}
+    DE     {}
+    default { set prdata(language) "EN" }
+  }
+  #
+  # Set messages
+  # ------------
+  switch $prdata(language) {
+    EN {
+        array set prdata {
+          ms:file         "File"
+          ms:printer      "Printer"
+          ms:printing     "Printing"
+          ms:printto      "Print to"
+          ms:command      "Printing command"
+          ms:prtofile     "The printing has been done in the file"
+          ms:yes          "Yes"
+          ms:no           "No"
+          ms:cancel       "Cancel"
+        } }
+    FR { 
+        array set prdata {
+          ms:file         "Fichier"
+          ms:printer      "Imprimante"
+          ms:printing     "Impression de"
+          ms:printto      "Imprimer vers"
+          ms:command      "Commande d'impression"
+          ms:prtofile     "L'impression a été effectuée dans le fichier"
+          ms:yes          "Oui"
+          ms:no           "Non"
+          ms:cancel       "Annuler"
+        } }
+    DE { 
+        array set prdata {
+          ms:file         "Datei"
+          ms:printer      "Drucker"
+          ms:printing     "Druckt"
+          ms:printto      "drucken auf"
+          ms:command      "Druckbefehl"
+          ms:prtofile     "Der Ausdruck in die Datei ist beendet"
+          ms:yes          "Ja"
+          ms:no           "Nein"
+          ms:cancel       "Abbruch"
+        } }
+  }
+  #
+  set prdata(ms:wintitle)    "$prdata(ms:printing) [file tail $prdata(filename)]"
+  #
+}
+################################################################################
+# END OF PRINTING BOX
+################################################################################
+#
+#
+################################################################################
+# 3. CONFIGURATION AND USEFUL COMMANDS
+################################################################################
+  #
+  ##############################################################################
+  #
+proc UT_Config {} {
+  global stusr
+  global env argv tk_version tcl_platform
+  #
+  # Initial definitions
+  # -------------------
+  array set stusr {
+            application   "X-html2ps"
+              shortname   "xhtml2ps"
+                version   "1.3"
+                 author   "Jean-Philippe ARGAUD"
+                  email   "jp.argaud@iname.com"
+              delimiter   " "
+               butwidth   10
+             widthlabel   20
+             widthentry   30
+             foreground   "#000000"
+             background   "#d9d9d9"
+                  debug   0
+               language   EN
+  }
+  #
+  # Command line arguments
+  # ----------------------
+  set stusr(filename)       [lindex [split $argv] 0]
+  #
+  #
+  # Platform specific ressources
+  # ----------------------------
+  if {[string compare $tcl_platform(platform) windows] == 0} {
+    array set stusr {
+               textfont   "-*-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
+               boldfont   "-*-helvetica-bold-r-normal--*-120-*-*-*-*-*-*"
+              lightfont   "-*-helvetica-medium-o-normal--*-120-*-*-*-*-*-*"
+               listfont   "-*-courier-medium-r-normal--*-120-*-*-*-*-*-*"
+              titlefont   "-*-times-medium-i-normal--*-240-*-*-*-*-*-*"
+    }
+    set stusr(user)       "winuser"
+    set stusr(rcfile)     "xhtml2ps.ini"
+  } else {
+    array set stusr {
+               textfont   "-adobe-helvetica-medium-r-normal--*-120-*"
+               boldfont   "-adobe-helvetica-bold-r-normal--*-120-*"
+              lightfont   "-adobe-helvetica-medium-o-normal--*-120-*"
+               listfont   "-adobe-courier-medium-r-normal--*-120-*"
+              titlefont   "-adobe-times-medium-i-normal--*-240-*"
+    }
+    set stusr(user)       "$env(USER)"
+    set stusr(rcfile)     "$env(HOME)/.xhtml2psrc"
+  }
+  #
+  # Default options
+  # ---------------
+  option add *font            $stusr(textfont) widgetDefault
+  option add *Button.font     $stusr(boldfont) widgetDefault
+  option add *Label.font      $stusr(boldfont) widgetDefault
+  option add *Entry.font      $stusr(listfont) widgetDefault
+  option add *Listbox.font    $stusr(listfont) widgetDefault
+  option add *Menu.tearOff    0
+  option add *Menu.background #aeaeae
+  #
+  set tcl_precision 17
+  set stusr(tclversion)   [info tclversion]
+  set stusr(tkversion)    $tk_version
+  set stusr(platform)     $tcl_platform(platform)
+  set stusr(scrw)         [winfo screenwidth .]
+  set stusr(scrh)         [winfo screenheight .]
+  #
+  bind all <Control-o> { set stusr(filename) [ FS_Box $stusr(language) $stusr(filename) "*.html" ] }
+  bind all <Control-w> { set stusr(filename) "" }
+  bind all <Control-q> { UT_SaveRessources ; exit }
+  bind all <Control-t> { UT_Convert }
+  bind all <Control-g> { UT_ViewPS }
+  bind all <Control-p> { UT_Print }
+  bind all <Control-c> { UT_Checking }
+  bind all <Control-a> { UT_About }
+  bind all <Control-h> { UT_Manual }
+  #
+  # Define required user preferences fields to save
+  # -----------------------------------------------
+  set stusr(userpref) "language viewer checker printcmd suppoptns titlepage infodsc tocexist"
+  #
+  # Set the defaults html2ps/xhtml2ps options
+  # -----------------------------------------
+  array set stusr {
+    command     "html2ps"
+    checker     "weblint -x Netscape"
+    viewer      "ghostview -magstep -2 -a4"
+    printcmd    "lp"
+    filepcmd    "exec cp"
+    orientation " "
+    colonnes    " "
+    titlepage   "-t"
+    numpages    "-n"
+    infodbg     " "
+    frame       " "
+    greyscale   " "
+    tocexist    "-C"
+    tocbegin    "b"
+    tocorig     "h"
+    textonly    " "
+    textcolor   " "
+    linkunder   " "
+    scaledoc    "1.0"
+    scaleimg    "1.0"
+    scalemat    "1.0"
+    imgorig     " "
+    suppoptns   " "
+    infodsc     " "
+    fonts       " "
+    fontsize    "11pt"
+  }
+}
+  #
+  ##############################################################################
+  # Setting application messages
+  #-----------------------------------------------------------------------------
+  #
+proc UT_SetMsgs {{language "EN"}} {
+  global stusr
+  #
+  # Check the choice
+  # ----------------
+  switch $stusr(language) {
+    EN     {}
+    FR     {}
+    DE     {}
+    default { set stusr(language) "EN" }
+  }
+  #
+  # Set messages
+  # ------------
+  set stusr(availang) "EN FR DE"
+  #
+  switch $stusr(language) {
+    EN { 
+        array set stusr {
+          ms:date         "July 2000"
+
+          ms:file         "File"
+          ms:new          "New"
+          ms:open         "Open"
+          ms:close        "Close"
+          ms:save         "Save"
+          ms:saveas       "Save as"
+          ms:preview      "Preview"
+          ms:print        "Print"
+          ms:quit         "Quit"
+
+          ms:edit         "Edit"
+          ms:undo         "Undo"
+          ms:copy         "Copy"
+          ms:cut          "Cut"
+          ms:paste        "Paste"
+          ms:search       "Search"
+          ms:research     "Search again"
+          ms:replace      "Replace"
+          ms:delete       "Delete"
+          ms:erase        "Erase"
+          ms:add          "Add"
+          ms:modify       "Modify"
+
+          ms:operations   "Operations"
+          ms:convertps    "Convert to Postscript"
+          ms:viewps       "View Postscript"
+          ms:printps      "Print Postscript"
+          ms:checking     "Check HTML"
+          ms:prefs        "Preferences"
+          ms:languages    "Language choice:"
+          ms:extcmd       "External commands:"
+          ms:suppoptns    "Html2ps other options:"
+          ms:psviewer     "Postscript viewer:"
+          ms:htmlchecker  "HTML checker:"
+          ms:printcmd     "Printing command:"
+
+          ms:options      "Options"
+          ms:fonts        "Fonts"
+          ms:info         "Informations"
+
+          ms:help         "Help"
+          ms:about        "About"
+          ms:manual       "Html2ps manual"
+          ms:copyright    "Copyright"
+
+          ms:yes          "Yes"
+          ms:no           "No"
+          ms:ok           "OK"
+          ms:cancel       "Cancel"
+          ms:exit         "Exit"
+          ms:directory    "Directory"
+          ms:filter       "Filter"
+          ms:hiddenfil    "View hidden files"
+          ms:clear        "Clear"
+          ms:continue     "Continue"
+          ms:fr           "French"
+          ms:en           "English"
+          ms:de           "German"
+
+          ms:appearance   "Appearance:"
+          ms:aspect       "Aspect:"
+          ms:portrait     "Portrait"
+          ms:landscape    "Landscape"
+          ms:columns      "Number of columns:"
+          ms:titlepage    "Title page:"
+          ms:pagesnbr     "Page numbers:"
+          ms:greyscale    "Images in greyscale:"
+          ms:border       "Border frame:"
+          ms:textonly     "Text only:"
+          ms:colortext    "Text in colors:"
+          ms:underlink    "Links underlined:"
+
+          ms:contents     "Table of contents:"
+          ms:included     "... included at the:"
+          ms:beginning    "beginning"
+          ms:theend       "end"
+          ms:build        "... and built from:"
+          ms:fromstyles   "HTML elements H#"
+          ms:fromlinks    "the links"
+          ms:frommarks    "the marks"
+          
+          ms:fonts        "Document font:"
+          ms:times        "Times"
+          ms:helvetica    "Helvetica"
+          ms:courier      "Courier"
+          ms:fontsize     "Font size:"
+
+          ms:scales       "Scale factors for:"
+          ms:scaledoc     "the document:"
+          ms:scaleimg     "the images:"
+          ms:scalemat     "the equations:"
+
+          ms:advanced     "Advanced options:"
+          ms:infodsc      "DSC compliant Postscript"
+          ms:imgorig      "Original Postscript images"
+          ms:infodbg      "Debug informations"
+
+          ms:checkhtml    "Checking done,\nthe HTML file is correct."
+          ms:abouttext    "Generic Tk/Tcl interface for html2ps 1.0b2,\n\
+                           an HTML to Postscript translator from Jan Karrman\n\
+                           (http://www.tdb.uu.se/~jan/html2ps.html)\n\n"
+        } }
+    FR { 
+        array set stusr {
+          ms:date         "Juillet 2000"
+
+          ms:file         "Fichier"
+          ms:new          "Nouveau"
+          ms:open         "Ouvrir"
+          ms:close        "Fermer"
+          ms:save         "Enregistrer"
+          ms:saveas       "Enregistrer sous"
+          ms:preview      "Visualiser"
+          ms:print        "Imprimer"
+          ms:quit         "Quitter"
+
+          ms:edit         "Editer"
+          ms:undo         "Annuler"
+          ms:copy         "Copier"
+          ms:cut          "Couper"
+          ms:paste        "Coller"
+          ms:search       "Chercher"
+          ms:research     "Chercher encore"
+          ms:replace      "Remplacer"
+          ms:delete       "Détruire"
+          ms:erase        "Effacer"
+          ms:add          "Ajouter"
+          ms:modify       "Modifier"
+
+          ms:operations   "Opérations"
+          ms:convertps    "Convertir en Postscript"
+          ms:viewps       "Visualisation Postscript"
+          ms:printps      "Impression Postscript"
+          ms:checking     "Vérification HTML"
+          ms:prefs        "Préférences"
+          ms:languages    "Choix de la langue :"
+          ms:extcmd       "Commandes externes :"
+          ms:suppoptns    "Autres options pour html2ps :"
+          ms:psviewer     "Visualiseur Postscript :"
+          ms:htmlchecker  "Vérificateur HTML :"
+          ms:printcmd     "Commande d'impression :"
+
+          ms:options      "Options"
+          ms:fonts        "Polices"
+          ms:info         "Informations"
+
+          ms:help         "Aide"
+          ms:about        "A propos"
+          ms:manual       "Manuel html2ps"
+          ms:copyright    "Copyright"
+
+          ms:yes          "Oui"
+          ms:no           "Non"
+          ms:ok           "OK"
+          ms:cancel       "Annuler"
+          ms:exit         "Sortie"
+          ms:directory    "Répertoire"
+          ms:filter       "Filtre"
+          ms:hiddenfil    "Voir les fichiers cachés"
+          ms:clear        "Effacer"
+          ms:continue     "Continuer"
+          ms:fr           "Francais"
+          ms:en           "Anglais"
+          ms:de           "Allemand"
+
+          ms:appearance   "Présentation :"
+          ms:aspect       "Orientation :"
+          ms:portrait     "Portrait"
+          ms:landscape    "Paysage"
+          ms:columns      "Nombre de colonnes :"
+          ms:titlepage    "Page de titre :"
+          ms:pagesnbr     "Numéros de pages :"
+          ms:greyscale    "Images en niveaux de gris :"
+          ms:border       "Encadrement :"
+          ms:textonly     "Texte uniquement :"
+          ms:colortext    "Texte en couleurs :"
+          ms:underlink    "Liens soulignés :"
+
+          ms:contents     "Table des matières :"
+          ms:included     "... incluse :"
+          ms:beginning    "au début"
+          ms:theend       "à la fin"
+          ms:build        "... et construite :"
+          ms:fromstyles   "d'après les styles H#"
+          ms:fromlinks    "d'après les liens"
+          ms:frommarks    "d'après les marques"
+          
+          ms:fonts        "Police du document :"
+          ms:times        "Times"
+          ms:helvetica    "Helvetica"
+          ms:courier      "Courier"
+          ms:fontsize     "Taille de police :"
+
+          ms:scales       "Echelles d'agrandissement :"
+          ms:scaledoc     "du document :"
+          ms:scaleimg     "des images :"
+          ms:scalemat     "des équations :"
+
+          ms:advanced     "Options avancées :"
+          ms:infodsc      "Postscript compatible DSC"
+          ms:imgorig      "Images Postscript originales"
+          ms:infodbg      "Informations de debug"
+
+          ms:checkhtml    "Vérification effectuée,\nle fichier HTML est correct."
+          ms:abouttext    "Interface Tk/Tcl pour html2ps 1.0b2,\n\
+                           un convertisseur de HTML en Postscript fait par Jan Karrman\n\
+                           (http://www.tdb.uu.se/~jan/html2ps.html)\n\n"
+        } }
+    DE { 
+        array set stusr {
+          ms:date         "Juli 2000"
+
+          ms:file         "Datei"
+          ms:new          "Neu"
+          ms:open         "Öffnen"
+          ms:close        "Schließen"
+          ms:save         "Speichern"
+          ms:saveas       "Speichern als"
+          ms:preview      "Vorschau"
+          ms:print        "Drucken"
+          ms:quit         "Beenden"
+
+          ms:edit         "Bearbeiten"
+          ms:undo         "Rückgängig"
+          ms:copy         "Kopieren"
+          ms:cut          "Ausschneiden"
+          ms:paste        "Einfügen"
+          ms:search       "Suchen"
+          ms:research     "Suchen wiederholen"
+          ms:replace      "Ersetzen"
+          ms:delete       "Löschen"
+          ms:erase        "Radieren"
+          ms:add          "Hinzufügen"
+          ms:modify       "Ändern"
+
+          ms:operations   "Aktionen"
+          ms:convertps    "In Postscript Konvertieren"
+          ms:viewps       "Vorschau Postscript"
+          ms:printps      "Drucke Postscript"
+          ms:checking     "Überprüfe HTML"
+          ms:prefs        "Einstellungen"
+          ms:languages    "Sprachauswahl :"
+          ms:extcmd       "Externe Befehle :"
+          ms:suppoptns    "Weitere Optionen für hml2ps :"
+          ms:psviewer     "Postscript-Betrachter :"
+          ms:htmlchecker  "HTML Prüfprogramm :"
+          ms:printcmd     "Druckbefehl :"
+
+          ms:options      "Optionen"
+          ms:fonts        "Schriften"
+          ms:info         "Informationen"
+
+          ms:help         "Hilfe"
+          ms:about        "Über"
+          ms:manual       "Hilfe zu html2ps (manpage)"
+          ms:copyright    "Copyright"
+
+          ms:yes          "Ja"
+          ms:no           "Nein"
+          ms:ok           "OK"
+          ms:cancel       "Abbruch"
+          ms:exit         "Beenden"
+          ms:directory    "Verzeichnis"
+          ms:filter       "Filter"
+          ms:hiddenfil    "Zeige versteckte Dateien"
+          ms:clear        "Löschen"
+          ms:continue     "Weiter"
+          ms:fr           "Französisch"
+          ms:en           "Englisch"
+          ms:de           "Deutsch"
+
+          ms:appearance   "Darstellung :"
+          ms:aspect       "Ausrichtung :"
+          ms:portrait     "Hochformat"
+          ms:landscape    "Querformat"
+          ms:columns      "Spaltenanzahl :"
+          ms:titlepage    "Titel Seite :"
+          ms:pagesnbr     "Seitenzahl :"
+          ms:greyscale    "Bilder in Graustufen :"
+          ms:border       "Rahmen :"
+          ms:textonly     "Nur Text :"
+          ms:colortext    "Text in Farbe :"
+          ms:underlink    "Links unterstrichen :"
+
+          ms:contents     "Inhaltsverzeichnis :"
+          ms:included     "... eingefügt am:"
+          ms:beginning    "Anfang"
+          ms:theend       "Ende"
+          ms:build        "... und erzeugt aus :"
+          ms:fromstyles   "HTML-Element H#"
+          ms:fromlinks    "den Links"
+          ms:frommarks    "den Marks"
+          
+          ms:fonts        "Font für das Dokument:"
+          ms:times        "Times"
+          ms:helvetica    "Helvetica"
+          ms:courier      "Courier"
+          ms:fontsize     "Groß:"
+
+          ms:scales       "Maßstab für :"
+          ms:scaledoc     "das Dokument :"
+          ms:scaleimg     "die Bilder :"
+          ms:scalemat     "die Formeln :"
+
+          ms:advanced     "Erweiterte Einstellungen :"
+          ms:infodsc      "Postscript verträglich mit DSC"
+          ms:imgorig      "Original Postscript Bilder"
+          ms:infodbg      "Debug Informationen"
+
+          ms:checkhtml    "Überprüfung beendet,\ndie Datei ist in Ordnung."
+          ms:abouttext    "Allgemeine Tk/Tcl-Oberfläche für html2ps 1.0b2,\n\
+                           ein HTML zu Postscript Konverter von Jan Karrman\n\
+                           (http://www.tdb.uu.se/~jan/html2ps.html)\n\n"
+        } }
+  }
+  #
+}
+  #
+  ##############################################################################
+  # Show the About comment
+  #-----------------------------------------------------------------------------
+  #
+proc UT_About {} {
+  global stusr
+  #
+  set w .msgwin
+  if [catch {toplevel $w}] {
+    raise $w
+  } else {
+    wm title    $w "About"
+    wm iconname $w "About"
+    pack [label $w.msg1 -text "$stusr(application) $stusr(version)"\
+         -font $stusr(titlefont)]\
+         -side top -padx 1m -pady 1m -ipadx 3m
+    pack [label $w.msg2 -text \
+         "$stusr(ms:abouttext) \
+          $stusr(author) - $stusr(email) - $stusr(ms:date)"]\
+         -side top -padx 1m -pady 1m -ipadx 3m
+    pack [button  $w.ok -text OK -width 10 -command { destroy .msgwin }]\
+         -side top -padx 1m -pady 1m -ipadx 3m
+  }
+}
+  #
+  ##############################################################################
+  # Show the man page
+  #-----------------------------------------------------------------------------
+  #
+proc UT_Manual {} {
+  #
+  .main configure -cursor watch
+  update idletasks
+  #
+  set running [open "| man html2ps |& cat" r]
+  set Output ""
+  while {[gets $running msg] >= 0} {
+    regsub -all "_" $msg "" msg
+    regsub -all "." $msg "" msg
+    append Output "  $msg\n"
+  }
+  catch { close $running }
+  #
+  UT_ViewMsg $Output
+  #
+  .main configure -cursor {}
+  #
+}
+  #
+  ##############################################################################
+  # Show the checking result page
+  #-----------------------------------------------------------------------------
+  #
+proc UT_Checking {} {
+  global stusr
+  #
+  .main configure -cursor watch
+  update idletasks
+  if (![string compare $stusr(filename) ""]) {
+    .main configure -cursor {}
+    return
+  }
+  #
+  set running [open "| $stusr(checker) $stusr(filename) |& cat" r+]
+  set Output ""
+  flush $running
+  while {[gets $running msg] >= 0} {
+    append Output "  $msg\n"
+  }
+  catch { close $running }
+  #
+  set l [string length $Output]
+  if {$l <= 0} {
+    UT_MBox -icon info -type ok -message $stusr(ms:checkhtml)
+  } else {
+    UT_ViewMsg $Output
+  }
+  #
+  .main configure -cursor {}
+}
+  #
+  ##############################################################################
+  # Show the postscript result page
+  #-----------------------------------------------------------------------------
+  #
+proc UT_ViewPS {} {
+  global stusr
+  #
+  if (![string compare $stusr(filename) ""]) { return }
+  #
+  set fichier [file tail $stusr(filename)]
+  set fichier [file rootname $fichier]
+  #
+  eval exec "$stusr(viewer) $fichier.ps &"
+  #
+}
+  #
+  ##############################################################################
+  # Launch the conversion
+  #-----------------------------------------------------------------------------
+  #
+proc UT_Convert {} {
+  global stusr
+  #
+  .main configure -cursor watch
+  update idletasks
+  if (![string compare $stusr(filename) ""]) {
+    .main configure -cursor {}
+    return
+  }
+  #
+  UT_Command
+  #
+  set running [open "| $stusr(convert) |& cat" r+]
+  set Output ""
+  flush $running
+  while {[gets $running msg] >= 0} {
+    append Output "  $msg\n"
+  }
+  catch { close $running }
+  #
+  if (![string compare $Output "  \n"]) {
+    UT_ViewMsg $Output
+  }
+  #
+  .main configure -cursor {}
+  #
+}
+  #
+  ##############################################################################
+  # Build the global command
+  #-----------------------------------------------------------------------------
+  #
+proc UT_Command {} {
+  global stusr
+  #
+  set fichier [file tail $stusr(filename)]
+  set fichier [file rootname $fichier]
+  #
+  set stusr(convert) \
+    "$stusr(command)   $stusr(orientation) $stusr(colonnes)  $stusr(numpages) \
+     $stusr(infodbg)   $stusr(frame)       $stusr(greyscale) $stusr(textonly) \
+     $stusr(imgorig)   $stusr(textcolor)   $stusr(linkunder) $stusr(infodsc) \
+     $stusr(titlepage) $stusr(suppoptns) \
+     -s $stusr(scaledoc) -i $stusr(scaleimg) -m $stusr(scalemat)"
+  if (![string compare $stusr(tocexist) "-C"]) {
+    append stusr(convert) " $stusr(tocexist) $stusr(tocbegin)$stusr(tocorig)"
+  }
+  if ([string compare $stusr(fonts) " "]) {
+    append stusr(convert) " -S \"BODY{font-family: $stusr(fonts);font-size: $stusr(fontsize)}\""
+  }
+  append stusr(convert) " -o $fichier.ps $stusr(filename)"
+  #
+  # puts "$stusr(convert)"
+}
+  #
+  ##############################################################################
+  # Show a text in a separate window
+  #-----------------------------------------------------------------------------
+  #
+proc UT_ViewMsg { message } {
+  #
+  set width 10
+  set w .msgwin
+  if [catch {toplevel $w}] {
+    raise $w
+  } else {
+    wm title    $w "MiniBrowser"
+    wm iconname $w "MiniBrowser"
+    wm minsize  $w 1 1
+    wm protocol $w WM_DELETE_WINDOW { }
+    #
+    frame $w.frame -borderwidth 2
+    pack $w.frame -side top -fill both -expand 1
+    #
+    # Text zone and scrollbar definition
+    # ----------------------------------
+    frame $w.frame.t -borderwidth 2 -relief groove
+    pack [text $w.frame.t.text -width 80 -height 30 -relief flat \
+          -font fixed -wrap word -padx 5 -pady 5 \
+          -yscrollcommand "$w.frame.t.scroll set" ] \
+          -side left -fill both -expand 1
+    pack [scrollbar $w.frame.t.scroll -relief sunken -width 3m \
+          -command "$w.frame.t.text yview" ] \
+          -side left -fill y
+    pack $w.frame.t -side top -fill both -expand 1 -padx 5 -pady 5
+    #
+    # Button definition
+    # -----------------
+    frame $w.frame.b -borderwidth 2
+    pack [button $w.frame.b.close -width $width -text Ok \
+          -command "destroy $w" ] \
+          -side top  -fill x -expand 1
+    pack $w.frame.b -side bottom -fill both -padx 5 -pady 5
+  }
+  #
+  # Editing properties
+  # ------------------
+  set w $w.frame.t.text
+  $w configure -state normal 
+  $w delete 1.0 end
+  # Get the file to see
+  $w insert 1.0 $message
+  $w configure -state disabled 
+  # Move the view to file beginning
+  $w yview -pickplace 1.0
+}
+  #
+  ##############################################################################
+  # Print a PS file
+  #-----------------------------------------------------------------------------
+  #
+proc UT_Print { } {
+  global stusr
+  #
+  if {! (   [string compare $stusr(filename) "" ] == 0  \
+         || [string compare $stusr(filename) " "] == 0) } {
+    #
+    set psfile [file rootname $stusr(filename)]
+    set psfile "$psfile.ps"
+    if {! [file exists $psfile]} { UT_Convert }
+    set ans [PR_Box $stusr(language) $stusr(printcmd) $stusr(filepcmd) $psfile ]
+    #
+  }
+}
+  #
+  ##############################################################################
+  # User preferences
+  #-----------------------------------------------------------------------------
+  #
+proc UT_UserPrefs { } {
+  global stusr
+  #
+  # Global window definition
+  # ------------------------
+  set w .usb
+  set textfont $stusr(textfont)
+  catch {destroy $w}
+  toplevel    $w -class Dialog
+  wm title    $w $stusr(ms:prefs)
+  wm iconname $w Dialog
+  wm minsize  $w 1 1
+  wm protocol $w WM_DELETE_WINDOW { }
+  #
+  # Preferences area
+  # ----------------
+  frame $w.pref -borderwidth 1 -relief flat
+  pack $w.pref -side top -fill both -expand 1
+  #
+  frame $w.lng -borderwidth 2 -relief groove
+  pack $w.lng -in $w.pref -side left -fill both -expand 1
+  #
+  pack [label $w.lng.lab -text $stusr(ms:languages) ] \
+    -in $w.lng -side top -anchor w -padx 1m -pady 1m -ipadx 3m
+  foreach country $stusr(availang) {
+    set name [string tolower $country]
+    eval radiobutton $w.$name -font $textfont -text $stusr(ms:$name) \
+      -variable stusr(language) -value $country
+    pack $w.$name -in $w.lng -side top -anchor w -padx 1m -pady 1m -ipadx 3m
+  }
+  #
+  frame $w.ext -borderwidth 2 -relief groove
+  pack $w.ext -in $w.pref -side right -fill both -expand 1
+  #
+  pack [label $w.ext.lab1 -text $stusr(ms:extcmd) ] \
+    -in $w.ext -side top -anchor w -padx 1m -pady 1m -ipadx 3m
+  #
+  frame $w.ext1 -borderwidth 1 -relief flat
+  pack $w.ext1 -in $w.ext -side top -fill both -expand 1
+  pack [label $w.ext1.lab -font $textfont -text $stusr(ms:psviewer) ] \
+    -in $w.ext1 -side left -anchor w -padx 1m -pady 1m -ipadx 3m
+  pack [entry $w.ext1.ent -font $textfont -textvariable stusr(viewer) ] \
+    -in $w.ext1 -side right -anchor w -padx 1m -pady 1m -ipadx 3m
+  #
+  frame $w.ext2 -borderwidth 1 -relief flat
+  pack $w.ext2 -in $w.ext -side top -fill both -expand 1
+  pack [label $w.ext2.lab -font $textfont -text $stusr(ms:htmlchecker) ] \
+    -in $w.ext2 -side left -anchor w -padx 1m -pady 1m -ipadx 3m
+  pack [entry $w.ext2.ent -font $textfont -textvariable stusr(checker) ] \
+    -in $w.ext2 -side right -anchor w -padx 1m -pady 1m -ipadx 3m
+  #
+  frame $w.ext3 -borderwidth 1 -relief flat
+  pack $w.ext3 -in $w.ext -side top -fill both -expand 1
+  pack [label $w.ext3.lab -font $textfont -text $stusr(ms:printcmd) ] \
+    -in $w.ext3 -side left -anchor w -padx 1m -pady 1m -ipadx 3m
+  pack [entry $w.ext3.ent -font $textfont -textvariable stusr(printcmd) ] \
+    -in $w.ext3 -side right -anchor w -padx 1m -pady 1m -ipadx 3m
+  #
+  frame $w.ext4 -borderwidth 1 -relief flat
+  pack $w.ext4 -in $w.ext -side top -fill both -expand 1
+  pack [label $w.ext4.lab -font $textfont -text $stusr(ms:suppoptns) ] \
+    -in $w.ext4 -side left -anchor w -padx 1m -pady 1m -ipadx 3m
+  pack [entry $w.ext4.ent -font $textfont -textvariable stusr(suppoptns) ] \
+    -in $w.ext4 -side right -anchor w -padx 1m -pady 1m -ipadx 3m
+  #
+  # ------------
+  frame $w.bot -borderwidth 1 -relief flat
+  pack $w.bot -side bottom -fill both
+  #
+  pack [button $w.ok -width 6 -text $stusr(ms:ok) \
+    -command { 
+      UT_SetMsgs $stusr(language)
+      destroy .main
+      Window show .main
+      UT_SaveRessources
+      set result 1
+    } ] \
+    -in $w.bot -side left -expand 1 -padx 1m -pady 1m -ipadx 3m
+  pack [button $w.cancel -width 6 -text $stusr(ms:cancel) \
+    -command { set result 0 } ] \
+    -in $w.bot -side left -expand 1 -padx 1m -pady 1m -ipadx 3m
+  #
+  # Launching the GUI
+  # -----------------
+  wm withdraw $w
+  update idletasks
+  set x [expr [winfo screenwidth $w]/2 - [winfo reqwidth $w]/2 \
+    - [winfo vrootx [winfo parent $w]]]
+  set y [expr [winfo screenheight $w]/2 - [winfo reqheight $w]/2 \
+    - [winfo vrooty [winfo parent $w]]]
+  wm geom $w +$x+$y
+  wm deiconify $w
+  set oldFocus [focus]
+  set oldGrab [grab current $w]
+  if {$oldGrab != ""} { set grabStatus [grab status $oldGrab] }
+  grab $w
+  focus $w
+  tkwait variable result
+  catch {focus $oldFocus}
+  destroy $w
+  if {$oldGrab != ""} {
+    if {$grabStatus == "global"} {
+      grab -global $oldGrab
+    } else {
+      grab $oldGrab
+    }
+  }
+}
+  #
+  ##############################################################################
+  # Save user ressource file
+  # ----------------------------------------------------------------------------
+proc UT_SaveRessources {} {
+  global stusr
+  #
+  set fid [open $stusr(rcfile) w]
+  #
+  # Write general comments
+  # ----------------------
+  puts $fid "# User ressource configuration file for $stusr(application) $stusr(version)"
+  puts $fid "# $stusr(author) - $stusr(email) - $stusr(ms:date)"
+  puts $fid "#"
+  puts $fid "# ATTENTION : this file is automatically generated by the"
+  puts $fid "# application. All modification of this file will have a"
+  puts $fid "# direct effect on the default values in the application."
+  puts $fid "#"
+  puts $fid "# A field declaration have the following form :"
+  puts $fid "# <name> = <value>"
+  puts $fid "# The spaces are of no importance on the whole line."
+  puts $fid ""
+  #
+  # Write all the required fields
+  # -----------------------------
+  foreach field $stusr(userpref) {
+    puts $fid "$field = $stusr($field)"
+  }
+  catch "close $fid"
+}
+  #
+  ##############################################################################
+  # Load user ressource file
+  # ----------------------------------------------------------------------------
+proc UT_LoadRessources {} {
+  global stusr
+  #
+  # Open the rc file if it exists
+  # -----------------------------
+  if [file readable $stusr(rcfile)] {
+    set fid [open $stusr(rcfile) r]
+    while { [gets $fid line] >= 0 } {
+      # Ignore empty and comment lines beginning with #
+      if { $line != "" && [regexp {^#} $line] == 0 } {
+        regsub -all {\ *=}  $line {=}  line
+        regsub -all {=\ *}  $line {=}  line
+        # Test if the line contains "="
+        if [regexp {(.*)=(.*)}  $line total field value] {
+          if { $value == "" } { set value " " }
+	  if [info exists stusr($field) ] {
+            set stusr($field) $value
+          }
+        }
+      }
+      set line ""
+    }
+    catch "close $fid"
+  }
+}
+  #
+  ##############################################################################
+  #
+proc UT_MBox { args } {
+  global stusr ChoosenButton
+  #
+  # Initial default values
+  # ----------------------
+  set w .msb
+  set textfont $stusr(textfont)
+  set specs {
+    {-icon    "" "" "info"}
+    {-message "" "" ""    }
+    {-title   "" "" " "   }
+    {-type    "" "" "ok"  }
+  }
+  array set options {
+    ok     { -width 6 -text $stusr(ms:ok)     -command "set ChoosenButton ok"     }
+    yes    { -width 6 -text $stusr(ms:yes)    -command "set ChoosenButton yes"    }
+    no     { -width 6 -text $stusr(ms:no)     -command "set ChoosenButton no"     }
+    cancel { -width 6 -text $stusr(ms:cancel) -command "set ChoosenButton cancel" }
+  }
+  #
+  # Initial configuration
+  # ---------------------
+  upvar #0 $w data
+  tclParseConfigSpec $w $specs "" $args
+  #
+  if {[lsearch {info warning error question} $data(-icon)] == -1} {
+    error "Invalid icon \"$data(-icon)\", must be \
+           error, info, question or warning"
+  }
+  #
+  case $data(-type) {
+    ok          { set messagebuttons "ok" }
+    okcancel    { set messagebuttons "ok cancel" }
+    yesno       { set messagebuttons "yes no" }
+    yesnocancel { set messagebuttons "yes no cancel" }
+    default     { error "Invalid type \"$data(-type)\", must be \ 
+                  ok, okcancel, yesno, yesnocancel"}
+  }
+  #
+  # Global window definition
+  # ------------------------
+  catch {destroy $w}
+  toplevel    $w -class Dialog
+  wm title    $w $data(-title)
+  wm iconname $w Dialog
+  wm minsize  $w 1 1
+  wm protocol $w WM_DELETE_WINDOW { }
+  #
+  option add *Dialog.msg.wrapLength 3i widgetDefault
+  #
+  # Text message area
+  # -----------------
+  frame $w.top -borderwidth 1 -relief groove
+  pack $w.top -side top -fill both -expand 1
+  #
+  if {$data(-icon) != ""} {
+    label $w.bitmap -bitmap $data(-icon)
+    pack $w.bitmap -in $w.top -side left -padx 3m -pady 3m
+  }
+  pack [label $w.msg -justify left -text $data(-message) -font $textfont] \
+       -in $w.top -side right -expand 1 -fill both -padx 3m -pady 3m
+  #
+  # Buttons area
+  # ------------
+  frame $w.bot -borderwidth 1 -relief groove
+  pack $w.bot -side bottom -fill both
+  #
+  foreach name $messagebuttons {
+    eval button $w.$name $options($name)
+    pack $w.$name -in $w.bot -side left -expand 1 -padx 1m -pady 1m -ipadx 3m
+  }
+  #
+  # Launching the GUI
+  # -----------------
+  wm withdraw $w
+  update idletasks
+  set x [expr [winfo screenwidth $w]/2 - [winfo reqwidth $w]/2 \
+    - [winfo vrootx [winfo parent $w]]]
+  set y [expr [winfo screenheight $w]/2 - [winfo reqheight $w]/2 \
+    - [winfo vrooty [winfo parent $w]]]
+  wm geom $w +$x+$y
+  wm deiconify $w
+  set oldFocus [focus]
+  set oldGrab [grab current $w]
+  if {$oldGrab != ""} { set grabStatus [grab status $oldGrab] }
+  grab $w
+  focus $w
+  tkwait variable ChoosenButton
+  catch {focus $oldFocus}
+  destroy $w
+  if {$oldGrab != ""} {
+    if {$grabStatus == "global"} {
+      grab -global $oldGrab
+    } else {
+      grab $oldGrab
+    }
+  }
+  return $ChoosenButton
+}
+  #
+  ##############################################################################
+  # Global configuration launching
+  # ------------------------------
+  #
+global stusr
+  #
+UT_Config
+  #
+UT_LoadRessources
+  #
+UT_SetMsgs $stusr(language)
+  #
+#
+################################################################################
+# END OF CONFIGURATION AND USEFUL COMMANDS
+################################################################################
+#
+#
+##############################################################################
+# 4. GUI PROCEDURES
+##############################################################################
+  # VTCL generated code, and modified
+  #
+  ##############################################################################
+  #
+proc Window {args} {
+global vTcl
+    set cmd [lindex $args 0]
+    set name [lindex $args 1]
+    set newname [lindex $args 2]
+    set rest [lrange $args 3 end]
+    if {$name == "" || $cmd == ""} {return}
+    if {$newname == ""} {
+        set newname $name
+    }
+    set exists [winfo exists $newname]
+    switch $cmd {
+        show {
+            if {$exists == "1" && $name != "."} {wm deiconify $name; return}
+            if {[info procs vTclWindow(pre)$name] != ""} {
+                eval "vTclWindow(pre)$name $newname $rest"
+            }
+            if {[info procs vTclWindow$name] != ""} {
+                eval "vTclWindow$name $newname $rest"
+            }
+            if {[info procs vTclWindow(post)$name] != ""} {
+                eval "vTclWindow(post)$name $newname $rest"
+            }
+        }
+        hide    { if $exists {wm withdraw $newname; return} }
+        iconify { if $exists {wm iconify $newname; return} }
+        destroy { if $exists {destroy $newname; return} }
+    }
+}
+
+#################################
+# VTCL GENERATED GUI PROCEDURES
+#
+
+proc vTclWindow. {base} {
+    if {$base == ""} {
+        set base .
+    }
+    ###################
+    # CREATING WIDGETS
+    ###################
+    wm focusmodel $base passive
+    wm geometry $base 200x200+0+0
+    wm maxsize $base 1137 870
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 1 1
+    wm withdraw $base
+    wm title $base "vt.tcl"
+    ###################
+    # SETTING GEOMETRY
+    ###################
+}
+
+proc vTclWindow.main {base} {
+  global stusr
+    if {$base == ""} {
+        set base .main
+    }
+    if {[winfo exists $base]} {
+        wm deiconify $base; return
+    }
+    ###################
+    # CREATING WIDGETS
+    ###################
+    toplevel $base -class Toplevel
+    wm focusmodel $base passive
+    ## wm geometry $base 682x387+373+265
+    ## wm maxsize $base 1137 870
+    wm minsize $base 1 1
+    wm overrideredirect $base 0
+    wm resizable $base 1 1
+    wm deiconify $base
+    wm title $base "$stusr(application)"
+    frame $base.fra22 \
+        -background #aeaeae -borderwidth 2 -height 33 -width 125 
+    menubutton $base.fra22.men18 \
+        -background #aeaeae -font -adobe-helvetica-bold-r-normal--*-120-* \
+        -menu .main.fra22.men18.01 -padx 11 -pady 4 -text $stusr(ms:file) 
+    menu $base.fra22.men18.01 \
+        -background #aeaeae -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -tearoff 0 
+    $base.fra22.men18.01 add command \
+        -accelerator {   Ctrl+O} \
+        -command { set stusr(filename) [ FS_Box $stusr(language) $stusr(filename) "*.html" ] } \
+        -label $stusr(ms:open) -state active 
+    $base.fra22.men18.01 add command \
+        -accelerator {   Ctrl+W} \
+        -command {set stusr(filename) ""} \
+        -label $stusr(ms:close)
+    $base.fra22.men18.01 add separator
+    $base.fra22.men18.01 add command \
+        -accelerator {   Ctrl+Q} -command { UT_SaveRessources ; exit } \
+        -label $stusr(ms:quit)
+    bind $base.fra22.men18.01 <Key-Control_L> {
+        .main.fra22.men18.01 invoke 1
+    }
+    menubutton $base.fra22.men17 \
+        -background #aeaeae -font -adobe-helvetica-bold-r-normal--*-120-* \
+        -menu .main.fra22.men17.01 -padx 11 -pady 4 -text $stusr(ms:operations)
+    menu $base.fra22.men17.01 \
+        -background #aeaeae -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -tearoff 0 
+    $base.fra22.men17.01 add command \
+        -accelerator {   Ctrl+T} -command UT_Convert \
+        -label $stusr(ms:convertps) -state active 
+    $base.fra22.men17.01 add command \
+        -accelerator {   Ctrl+G} -command UT_ViewPS \
+        -label $stusr(ms:viewps)
+    $base.fra22.men17.01 add command \
+        -accelerator {   Ctrl+P} -command UT_Print \
+        -label $stusr(ms:printps)
+    $base.fra22.men17.01 add command \
+        -accelerator {   Ctrl+C} -command UT_Checking \
+        -label $stusr(ms:checking)
+    $base.fra22.men17.01 add command \
+        -command UT_UserPrefs -label $stusr(ms:prefs) 
+    bind $base.fra22.men17.01 <Key-Control_L> {
+        .main.fra22.men17.01 invoke 1
+    }
+    menubutton $base.fra22.men28 \
+        -background #aeaeae -font -adobe-helvetica-bold-r-normal--*-120-* \
+        -menu .main.fra22.men28.m -padx 11 -pady 4 -text $stusr(ms:help) 
+    menu $base.fra22.men28.m \
+        -background #aeaeae -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -tearoff 0 
+    $base.fra22.men28.m add command \
+        -accelerator {   Ctrl+A} -command { UT_About } \
+        -label $stusr(ms:about) 
+    $base.fra22.men28.m add command \
+        -accelerator {   Ctrl+H} -command { UT_Manual } \
+        -label $stusr(ms:manual) 
+    bind $base.fra22.men28.m <Key-Control_L> {
+        .main.fra22.men28.m invoke 1
+    }
+    label $base.fra22.lab26 \
+        -background #aeaeae -borderwidth 1 \
+        -font -Adobe-Times-Medium-I-Normal--*-240-*-*-*-*-*-* \
+        -text "$stusr(application) $stusr(version)"
+    menu $base.fra22.men19 \
+        -background #aeaeae -cursor {} \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -tearoff 0 
+    frame $base.fra23 \
+        -borderwidth 2 -height 42 -relief groove -width 125 
+    entry $base.fra23.ent27 \
+        -font -adobe-courier-medium-r-normal--*-120-* \
+        -textvariable stusr(filename) 
+    frame $base.fra17 \
+        -borderwidth 2 -height 353 -relief groove -width 117 
+    frame $base.fra17.01 \
+        -borderwidth 2 -height 75 -relief groove -width 125 
+    label $base.fra17.01.02 \
+        -borderwidth 1 -font -adobe-helvetica-bold-r-normal--*-120-* \
+        -text $stusr(ms:appearance)
+    frame $base.fra17.01.03 \
+        -borderwidth 2 -height 75 -width 125 
+    frame $base.fra17.01.03.04 \
+        -height 75 -width 125 
+    label $base.fra17.01.03.04.05 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:aspect)
+    label $base.fra17.01.03.04.06 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:columns)
+    label $base.fra17.01.03.04.07 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:titlepage)
+    label $base.fra17.01.03.04.08 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:pagesnbr)
+    label $base.fra17.01.03.04.lab31 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:greyscale)
+    label $base.fra17.01.03.04.lab32 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:border)
+    label $base.fra17.01.03.04.lab33 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:textonly)
+    label $base.fra17.01.03.04.lab34 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:colortext)
+    label $base.fra17.01.03.04.lab35 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:underlink)
+    frame $base.fra17.01.03.011 \
+        -height 75 -width 125 
+    frame $base.fra17.01.03.011.012 \
+        -height 75 -width 125 
+    radiobutton $base.fra17.01.03.011.012.013 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:portrait) \
+        -value { } -variable stusr(orientation) 
+    radiobutton $base.fra17.01.03.011.012.014 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:landscape) \
+        -value -L -variable stusr(orientation) 
+    frame $base.fra17.01.03.011.015 \
+        -height 75 -width 125 
+    radiobutton $base.fra17.01.03.011.015.016 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 -text 1 \
+        -value { } -variable stusr(colonnes) 
+    radiobutton $base.fra17.01.03.011.015.017 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 -text 2 \
+        -value -2 -variable stusr(colonnes) 
+    frame $base.fra17.01.03.011.016 \
+        -height 75 -width 125 
+    radiobutton $base.fra17.01.03.011.016.016 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:yes) \
+        -value -t -variable stusr(titlepage) 
+    radiobutton $base.fra17.01.03.011.016.017 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:no) \
+        -value { } -variable stusr(titlepage) 
+    frame $base.fra17.01.03.011.018 \
+        -height 75 -width 125 
+    radiobutton $base.fra17.01.03.011.018.019 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:yes) \
+        -value -n -variable stusr(numpages) 
+    radiobutton $base.fra17.01.03.011.018.020 \
+        -command {set stusr(tocexist) " "} \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:no) \
+        -value { } -variable stusr(numpages) 
+    frame $base.fra17.01.03.011.024 \
+        -height 75 -width 125 
+    radiobutton $base.fra17.01.03.011.024.025 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:yes) \
+        -value -g -variable stusr(greyscale) 
+    radiobutton $base.fra17.01.03.011.024.026 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:no) \
+        -value { } -variable stusr(greyscale) 
+    frame $base.fra17.01.03.011.fra36 \
+        -height 75 -width 125 
+    radiobutton $base.fra17.01.03.011.fra36.01 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:yes) \
+        -value -F -variable stusr(frame) 
+    radiobutton $base.fra17.01.03.011.fra36.02 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:no) \
+        -value { } -variable stusr(frame) 
+    frame $base.fra17.01.03.011.fra37 \
+        -height 75 -width 125 
+    radiobutton $base.fra17.01.03.011.fra37.01 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:yes) \
+        -value -T -variable stusr(textonly) 
+    radiobutton $base.fra17.01.03.011.fra37.02 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:no) \
+        -value { } -variable stusr(textonly) 
+    frame $base.fra17.01.03.011.fra38 \
+        -height 75 -width 125 
+    radiobutton $base.fra17.01.03.011.fra38.01 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:yes) \
+        -value -U -variable stusr(textcolor) 
+    radiobutton $base.fra17.01.03.011.fra38.02 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:no) \
+        -value { } -variable stusr(textcolor) 
+    frame $base.fra17.01.03.011.fra39 \
+        -height 75 -width 125 
+    radiobutton $base.fra17.01.03.011.fra39.01 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:yes) \
+        -value -u -variable stusr(linkunder) 
+    radiobutton $base.fra17.01.03.011.fra39.02 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -pady 5 \
+        -text $stusr(ms:no) \
+        -value { } -variable stusr(linkunder) 
+    frame $base.fra17.036 \
+        -borderwidth 2 -height 75 -relief groove -width 125 
+    label $base.fra17.036.037 \
+        -borderwidth 1 -font -adobe-helvetica-bold-r-normal--*-120-* \
+        -foreground #000000 -text $stusr(ms:contents)
+    frame $base.fra17.036.038 \
+        -borderwidth 2 -height 75 -width 125 
+    radiobutton $base.fra17.036.038.039 \
+        -command {set stusr(numpages) "-n"} \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:yes) -value -C \
+        -variable stusr(tocexist) 
+    radiobutton $base.fra17.036.038.040 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:no) -value { } \
+        -variable stusr(tocexist) 
+    label $base.fra17.036.041 \
+        -borderwidth 1 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:included)
+    frame $base.fra17.036.042 \
+        -borderwidth 2 -height 75 -width 125 
+    radiobutton $base.fra17.036.042.043 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:beginning) \
+        -value b -variable stusr(tocbegin) 
+    radiobutton $base.fra17.036.042.044 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:theend) \
+        -value { } -variable stusr(tocbegin) 
+    label $base.fra17.036.045 \
+        -borderwidth 1 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:build)
+    frame $base.fra17.036.046 \
+        -borderwidth 2 -height 75 -width 125 
+    radiobutton $base.fra17.036.046.047 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:fromstyles) -value h -variable stusr(tocorig) 
+    radiobutton $base.fra17.036.046.048 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:fromlinks) -value f -variable stusr(tocorig) 
+    radiobutton $base.fra17.036.046.049 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:frommarks) -value t -variable stusr(tocorig) 
+    frame $base.fra17.036.fra58 \
+        -borderwidth 2 -height 75 -width 125 
+    label $base.fra17.036.fra58.lab59 \
+        -borderwidth 1 -font -adobe-helvetica-bold-r-normal--*-120-* \
+        -text $stusr(ms:fonts)
+    radiobutton $base.fra17.036.fra58.che60 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:times) -value Times -variable stusr(fonts) 
+    radiobutton $base.fra17.036.fra58.che61 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:helvetica) -value Helvetica -variable stusr(fonts) 
+    radiobutton $base.fra17.036.fra58.che62 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:courier) -value Courier -variable stusr(fonts) 
+    frame $base.fra17.036.fra58.che63
+    label $base.fra17.036.fra58.che64 \
+        -borderwidth 2 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -text $stusr(ms:fontsize)
+    menubutton $base.fra17.036.fra58.che65 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -relief sunken \
+        -menu $base.fra17.036.fra58.che65.m -width 5 -text $stusr(fontsize) 
+    menu $base.fra17.036.fra58.che65.m \
+        -cursor {} -font -adobe-helvetica-medium-r-normal--*-120-* -tearoff 0
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 6pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 6pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 8pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 8pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 9pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 9pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 10pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 10pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 11pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 11pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 12pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 12pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 13pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 13pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 14pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 14pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 16pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 16pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 18pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 18pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 20pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 20pt 
+    $base.fra17.036.fra58.che65.m add command \
+        -command { set stusr(fontsize) 24pt ; .main.fra17.036.fra58.che65 config -text $stusr(fontsize) } -label 24pt 
+
+    frame $base.fra17.fra40 \
+        -borderwidth 2 -height 75 -relief groove -width 125 
+    frame $base.fra17.fra40.fra54 \
+        -borderwidth 2 -height 75 -width 177 
+    label $base.fra17.fra40.fra54.lab55 \
+        -borderwidth 1 -font -adobe-helvetica-bold-r-normal--*-120-* \
+        -text $stusr(ms:scales)
+    frame $base.fra17.fra40.fra54.fra56 \
+        -borderwidth 2 -height 75 -width 125 
+    label $base.fra17.fra40.fra54.fra56.01 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:scaledoc)
+    label $base.fra17.fra40.fra54.fra56.02 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:scaleimg)
+    label $base.fra17.fra40.fra54.fra56.03 \
+        -borderwidth 4 -font -adobe-helvetica-medium-r-normal--*-120-* \
+        -pady 4 -text $stusr(ms:scalemat)
+    frame $base.fra17.fra40.fra54.fra57 \
+        -borderwidth 2 -height 75 -width 125 
+    entry $base.fra17.fra40.fra54.fra57.01 \
+        -font -adobe-courier-medium-r-normal--*-120-* \
+        -textvariable stusr(scaledoc) -width 5 
+    entry $base.fra17.fra40.fra54.fra57.02 \
+        -font -adobe-courier-medium-r-normal--*-120-* \
+        -textvariable stusr(scaleimg) -width 5 
+    entry $base.fra17.fra40.fra54.fra57.03 \
+        -font -adobe-courier-medium-r-normal--*-120-* \
+        -textvariable stusr(scalemat) -width 5 
+    frame $base.fra17.fra40.fra58 \
+        -borderwidth 2 -height 75 -width 125 
+    label $base.fra17.fra40.fra58.lab59 \
+        -borderwidth 1 -font -adobe-helvetica-bold-r-normal--*-120-* \
+        -text $stusr(ms:advanced)
+    checkbutton $base.fra17.fra40.fra58.che60 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -offvalue { } \
+        -onvalue -D -text $stusr(ms:infodsc) -variable stusr(infodsc) 
+    checkbutton $base.fra17.fra40.fra58.che61 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -offvalue { } \
+        -onvalue -O -text $stusr(ms:imgorig) -variable stusr(imgorig) 
+    checkbutton $base.fra17.fra40.fra58.che62 \
+        -font -adobe-helvetica-medium-r-normal--*-120-* -offvalue { } \
+        -onvalue -d -text $stusr(ms:infodbg) -variable stusr(infodbg) 
+    ###################
+    # SETTING GEOMETRY
+    ###################
+    pack $base.fra22 \
+        -in .main -anchor n -expand 0 -fill x -padx 4 -pady 4 -side top 
+    pack $base.fra22.men18 \
+        -in .main.fra22 -anchor center -expand 0 -fill none -side left 
+    pack $base.fra22.men17 \
+        -in .main.fra22 -anchor center -expand 0 -fill none -side left 
+    pack $base.fra22.men28 \
+        -in .main.fra22 -anchor center -expand 0 -fill none -side right 
+    # pack $base.fra22.lab26 \
+    #   -in .main.fra22 -anchor center -expand 0 -fill none -side top 
+    pack $base.fra23 \
+        -in .main -anchor n -expand 0 -fill x -padx 4 -pady 4 -side top 
+    pack $base.fra23.ent27 \
+        -in .main.fra23 -anchor center -expand 1 -fill x -side left 
+    pack $base.fra17 \
+        -in .main -anchor nw -expand 0 -fill none -padx 4 -pady 4 -side top 
+    pack $base.fra17.01 \
+        -in .main.fra17 -anchor center -expand 0 -fill y -side left 
+    pack $base.fra17.01.02 \
+        -in .main.fra17.01 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03 \
+        -in .main.fra17.01 -anchor center -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.04 \
+        -in .main.fra17.01.03 -anchor nw -expand 0 -fill none -side left 
+    pack $base.fra17.01.03.04.05 \
+        -in .main.fra17.01.03.04 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.04.06 \
+        -in .main.fra17.01.03.04 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.04.07 \
+        -in .main.fra17.01.03.04 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.04.08 \
+        -in .main.fra17.01.03.04 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.04.lab31 \
+        -in .main.fra17.01.03.04 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.04.lab32 \
+        -in .main.fra17.01.03.04 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.04.lab33 \
+        -in .main.fra17.01.03.04 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.04.lab34 \
+        -in .main.fra17.01.03.04 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.04.lab35 \
+        -in .main.fra17.01.03.04 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011 \
+        -in .main.fra17.01.03 -anchor center -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.012 \
+        -in .main.fra17.01.03.011 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.012.013 \
+        -in .main.fra17.01.03.011.012 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.01.03.011.012.014 \
+        -in .main.fra17.01.03.011.012 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.01.03.011.015 \
+        -in .main.fra17.01.03.011 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.015.016 \
+        -in .main.fra17.01.03.011.015 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.01.03.011.015.017 \
+        -in .main.fra17.01.03.011.015 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.01.03.011.016 \
+        -in .main.fra17.01.03.011 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.016.016 \
+        -in .main.fra17.01.03.011.016 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.01.03.011.016.017 \
+        -in .main.fra17.01.03.011.016 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.01.03.011.018 \
+        -in .main.fra17.01.03.011 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.018.019 \
+        -in .main.fra17.01.03.011.018 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.01.03.011.018.020 \
+        -in .main.fra17.01.03.011.018 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.01.03.011.024 \
+        -in .main.fra17.01.03.011 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.024.025 \
+        -in .main.fra17.01.03.011.024 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.01.03.011.024.026 \
+        -in .main.fra17.01.03.011.024 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.01.03.011.fra36 \
+        -in .main.fra17.01.03.011 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.fra36.01 \
+        -in .main.fra17.01.03.011.fra36 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.01.03.011.fra36.02 \
+        -in .main.fra17.01.03.011.fra36 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.01.03.011.fra37 \
+        -in .main.fra17.01.03.011 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.fra37.01 \
+        -in .main.fra17.01.03.011.fra37 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.01.03.011.fra37.02 \
+        -in .main.fra17.01.03.011.fra37 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.01.03.011.fra38 \
+        -in .main.fra17.01.03.011 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.fra38.01 \
+        -in .main.fra17.01.03.011.fra38 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.01.03.011.fra38.02 \
+        -in .main.fra17.01.03.011.fra38 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.01.03.011.fra39 \
+        -in .main.fra17.01.03.011 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.01.03.011.fra39.01 \
+        -in .main.fra17.01.03.011.fra39 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.01.03.011.fra39.02 \
+        -in .main.fra17.01.03.011.fra39 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.036 \
+        -in .main.fra17 -anchor center -expand 0 -fill y -side left 
+    pack $base.fra17.036.037 \
+        -in .main.fra17.036 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.038 \
+        -in .main.fra17.036 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.038.039 \
+        -in .main.fra17.036.038 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.036.038.040 \
+        -in .main.fra17.036.038 -anchor center -expand 0 -fill none -side top 
+    pack $base.fra17.036.041 \
+        -in .main.fra17.036 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.042 \
+        -in .main.fra17.036 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.042.043 \
+        -in .main.fra17.036.042 -anchor center -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.036.042.044 \
+        -in .main.fra17.036.042 -anchor center -expand 0 -fill none -side top 
+    pack $base.fra17.036.045 \
+        -in .main.fra17.036 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.046 \
+        -in .main.fra17.036 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.046.047 \
+        -in .main.fra17.036.046 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.046.048 \
+        -in .main.fra17.036.046 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.046.049 \
+        -in .main.fra17.036.046 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.fra58 \
+        -in .main.fra17.036 -anchor nw -expand 0 -fill x -side bottom 
+    pack $base.fra17.036.fra58.lab59 \
+        -in .main.fra17.036.fra58 -anchor w -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.036.fra58.che60 \
+        -in .main.fra17.036.fra58 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.fra58.che61 \
+        -in .main.fra17.036.fra58 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.036.fra58.che62 \
+        -in .main.fra17.036.fra58 -anchor nw -expand 0 -fill none -side top 
+
+    pack $base.fra17.036.fra58.che63 \
+        -in $base.fra17.036.fra58 -anchor nw -expand 0 -fill x -side bottom 
+    pack $base.fra17.036.fra58.che64 \
+        -in $base.fra17.036.fra58.che63 -anchor w -expand 0 -fill none -side left 
+    pack $base.fra17.036.fra58.che65 \
+        -in $base.fra17.036.fra58.che63 -anchor e -expand 0 -fill none -side right 
+
+    pack $base.fra17.fra40 \
+        -in .main.fra17 -anchor center -expand 0 -fill y -side left 
+    pack $base.fra17.fra40.fra54 \
+        -in .main.fra17.fra40 -anchor nw -expand 0 -fill x -side top 
+    pack $base.fra17.fra40.fra54.lab55 \
+        -in .main.fra17.fra40.fra54 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.fra40.fra54.fra56 \
+        -in .main.fra17.fra40.fra54 -anchor nw -expand 0 -fill none \
+        -side left 
+    pack $base.fra17.fra40.fra54.fra56.01 \
+        -in .main.fra17.fra40.fra54.fra56 -anchor nw -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.fra40.fra54.fra56.02 \
+        -in .main.fra17.fra40.fra54.fra56 -anchor nw -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.fra40.fra54.fra56.03 \
+        -in .main.fra17.fra40.fra54.fra56 -anchor nw -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.fra40.fra54.fra57 \
+        -in .main.fra17.fra40.fra54 -anchor center -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.fra40.fra54.fra57.01 \
+        -in .main.fra17.fra40.fra54.fra57 -anchor center -expand 0 -fill none \
+        -pady 4 -side top 
+    pack $base.fra17.fra40.fra54.fra57.02 \
+        -in .main.fra17.fra40.fra54.fra57 -anchor center -expand 0 -fill none \
+        -pady 4 -side top 
+    pack $base.fra17.fra40.fra54.fra57.03 \
+        -in .main.fra17.fra40.fra54.fra57 -anchor center -expand 0 -fill none \
+        -pady 4 -side top 
+    pack $base.fra17.fra40.fra58 \
+        -in .main.fra17.fra40 -anchor nw -expand 0 -fill x -side bottom 
+    pack $base.fra17.fra40.fra58.lab59 \
+        -in .main.fra17.fra40.fra58 -anchor w -expand 0 -fill none \
+        -side top 
+    pack $base.fra17.fra40.fra58.che60 \
+        -in .main.fra17.fra40.fra58 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.fra40.fra58.che61 \
+        -in .main.fra17.fra40.fra58 -anchor nw -expand 0 -fill none -side top 
+    pack $base.fra17.fra40.fra58.che62 \
+        -in .main.fra17.fra40.fra58 -anchor nw -expand 0 -fill none -side top 
+}
+
+Window show .
+Window show .main
