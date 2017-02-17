@@ -41,6 +41,11 @@ sub HTMLRepresentationFromTemplate
 {
     my $self = shift @_;
     my $tpl = shift @_;
+    my $header = shift @_;
+    if ($header eq undef)
+    {
+        $header = "";
+    }
     
     if (!defined($self->{metadata}))
     {
@@ -49,8 +54,9 @@ sub HTMLRepresentationFromTemplate
     
     my $html = $self->HTMLRepresentation();
     
-    my ($long_date, $iso_timestamp, $standard_date, $time, $theyear) = GetDate();
+    my ($long_date, $iso_timestamp) = GetDate();
     my $tpl = ReadFile($tpl);
+    $tpl =~ s/%%header%%/$header/gi;
     $tpl =~ s/%%content%%/$html/gi;
     $tpl =~ s/%%datecreated%%/$iso_timestamp/gi;
     $tpl =~ s/%%title%%/$self->{metadata}->{title}/gi;

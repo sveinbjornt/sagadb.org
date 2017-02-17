@@ -86,6 +86,7 @@ my $pageframe_tpl = 'tpl/pageframe.tpl';
 my $citation_tpl = "tpl/citation.tpl";
 my $sagapage_tpl = "tpl/pageframe.tpl";
 my $indexaz_tpl = "tpl/index_az.tpl";
+my $saga_header_tpl_path = "tpl/saga_header.tpl";
 
 # Getopt
 $Getopt::Std::STANDARD_HELP_VERSION = 1; # so --help quits after usage string
@@ -114,6 +115,23 @@ print "Reading source directory\n";
 opendir(SRCDIR, $srcdir) or die("Failed to open '$srcdir' directory");
 my @datafiles = readdir(SRCDIR);
 closedir(SRCDIR);
+
+# Create language map which contains every language version for each saga basename
+my %saga2langs_map;
+foreach (@datafiles) 
+{
+    if ($_ !~ m/\.xml$/ || $_ =~ m/^\./ || -d $_) { next; }
+    my $basename = $_;
+    $basename =~ s/\.xml$//g; #Remove xml suffix
+    my($fn, $directory, $suffix) = fileparse($basename,  qr/\.[^.]*/);
+    if (!$saga2langs_map{$fn}) 
+    {
+        my @a = ();
+        $saga2langs_map{$fn} = \@a;
+    }
+    $suffix =~ s/^\.//;
+    push($saga2langs_map{$fn}, $suffix);
+}
 
 # Iterate through files, convert
 foreach (@datafiles)
@@ -145,7 +163,7 @@ foreach (@datafiles)
     my $title = $sdbxml->{metadata}->{title};
     my $lang = $sdbxml->{metadata}->{language};
     
-    # outfile names
+    # Output file paths
     my $htmlpath = $htmldir . "$basename.html";
     my $txtpath = $textdir . "$basename.txt";
     my $pdfpath = $pdfdir . "$basename.pdf";
@@ -196,39 +214,59 @@ foreach (@datafiles)
     }
     
     # Create spoken audio files
-    if ($opts{v} or $opts{A})
-    {
-        print "\tCreating spoken audio files\n";
-        if ($isolang ne 'en')
-        {
-            print "\t\tSkipping, only English supported...\n";
-        }
+    # if ($opts{v} or $opts{A})
+    # {
+    #     print "\tCreating spoken audio files\n";
+    #     if ($isolang ne 'en')
+    #     {
+    #         print "\t\tSkipping, only English supported...\n";
+    #     }
+    #     
+    #     $sdbxml->CreateChapterAudioFilesInDirectory($audiopath);
+    # }
+    # 
+    # # This adds audio link to chapter headings
+    # if (-e $audiopath)
+    # {
+    #     $sdbxml->{audio} = 1;
+    # }
+    
+    
         
-        $sdbxml->CreateChapterAudioFilesInDirectory($audiopath);
-    }
-    
-    # This adds audio link to chapter headings
-    if (-e $audiopath)
-    {
-        $sdbxml->{audio} = 1;
-    }
-    
     # Create website pages
     if ($opts{m} or $opts{a} or $opts{A})
     {
+        # Create saga page header
+        my $langlinks = "";
+        my $langs = $saga2langs_map{$saganame};
+        foreach my $l(@$langs) 
+        {
+            my $style = $info{language_iso} eq $l ? "style='border: 2px solid gray;';" : "";
+            $langlinks .= "<a href=\"$saganame.$l\"><img src=\"/images/flags/$l.gif\" $style></a>\n";
+        }
+        
+        my $header_tpl = ReadFile($saga_header_tpl_path);
+        $header_tpl =~ s/%%basename%%/$basename/gi;
+        $header_tpl =~ s/%%langlinks%%/$langlinks/gi;
+    
         # Create saga website page
         print "\tCreating HTML website page '$basename.html'\n";
-        my $html = $sdbxml->HTMLRepresentationFromTemplate($sagapage_tpl);            
+        my $html = $sdbxml->HTMLRepresentationFromTemplate($sagapage_tpl, $header_tpl);            
         WriteFile( $pagesdir . $basename . ".html", $html);
         symlink( $basename . ".html", $pagesdir . $basename);
-           
+        
+        # Backward compatibility hack: basename minus lang suffix links to Icelandic version
+        if ($info{language_iso} eq 'is') {
+            symlink( $basename . ".html", $pagesdir . $saganame);
+        }
+        
         # Create citation page
         my $citationpage = $basename . ".cite.html"; 
         print "\tCreating citation page '$citationpage'\n";
         $html = $sdbxml->HTMLCitationRepresentationFromTemplate($citation_tpl);
         WriteFile( $pagesdir . $basename . ".cite.html", $html);
         
-        symlink($basename . ".cite.html", $pagesdir . $basename . ".cite")
+        symlink($basename . ".cite.html", $pagesdir . $basename . ".cite");
     }
     
     print "\n";
@@ -298,7 +336,7 @@ if ($opts{m} or $opts{a} or $opts{A})
       
           $li .= "<a href=\"$saganame.$isolang\"><img src=\"/images/flags/$isolang.gif\" class=\"flag\" alt=\"$lang->{title}\"></a>\n";
       }
-      $li = "<p style='line-height:12px;'>" . $li . "</p>";
+      $li = "<p>" . $li . "</p>";
       my $item = "<a href=\"$saganame.is\"><strong>$is_title</strong></a>\n$li\n\n\n";
       
       if ($sagacnt < $half)
@@ -372,6 +410,7 @@ EOF
     $frame =~ s/%%content%%/$tpl/gi;
     $frame =~ s/%%title%%/Index of the Icelandic Sagas/gi;
     $frame =~ s/%%language%%/en/gi;
+    $frame =~ s/%%header%%//gi;
     
     WriteFile( $pagesdir . "index_az.html", $frame);
     print "\tSymlinking to index_az.html from $pagesdir" . "index_az\n\n";
@@ -389,6 +428,7 @@ EOF
         my $page = ReadFile('tpl/' . $p . ".tpl");
         my $frame = ReadFile($pageframe_tpl);
         $frame =~ s/%%content%%/$page/gi;
+        $frame =~ s/%%header%%//gi;
         my $display_title = ucfirst($p);
         $frame =~ s/%%title%%/$display_title/gi;
         $frame =~ s/%%language%%/en/gi;

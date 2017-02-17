@@ -47,7 +47,7 @@
         <div class="small-12 medium-9 medium-centered columns">
         <!-- CONTENT BEGINS -->    
     
-    
+    %%header%%
     %%content%%
     
     
