@@ -15,5 +15,5 @@ All the sagas as PDF documents with a content index.</p>
 <p><a href="/files/zip/all_sagas_epub.zip"><strong>EPUB</strong></a><br>
 All sagas in EPUB format for electronic book-readers</p>
 
-<p><a href="/files/zip/saga_tools.zip"><strong>TOOLS</strong></a><br>
-Build tools and XML source files for the sagas.  Also available <a href="https://github.com/sveinbjornt/SagaDB">on GitHub</a>.</p>
+<p><a href="https://github.com/sveinbjornt/sagadb.org"><strong>TOOLS</strong></a><br>
+Build tools and XML source files for the sagas <a href="https://github.com/sveinbjornt/sagadb.org">on GitHub</a>.</p>
