@@ -26,7 +26,18 @@
           <li><a href="/brennu-njals_saga.is">Njáls saga</a></li>
           <li><a href="/laxdaela_saga.is">Laxdæla saga</a></li>
           <li><a href="/grettis_saga.is">Grettis saga</a></li>
-          </ul>        
+          </ul>
+          <h2>Related sites</h2>
+          <ul>
+          <li><a href="http://sagnanet.is/">Sagnanet</a></li>
+          <li><a href="http://www.snerpa.is/net/index.html">Netútgáfan</a></li>
+          <li><a
+          href="http://www.heimskringla.no/enindex.php">Heimskringla.no</a></li>
+          <li><a href="http://www.northvegr.org/">Northvegr.org</a></li>
+          <li><a href="http://en.wikipedia.org/wiki/Template:Icelandic_Sagas">Wikipedia: Sagas</a></li>
+          <li><a href="http://www.arnastofnun.is/">Árnastofnun</a></li>
+          <li><a href="http://omacl.org/">OMACL</a></li>
+          </ul> 
     </div>
   </div>
 
@@ -43,6 +54,10 @@
 
         <p>Running the Icelandic Saga Database takes time and money.  Your donations help keep us up and running!</p> 
 
+        <p>You can also support us by buying the Icelandic Sagas in English translation via this Amazon link:</p>
+        
+        <iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=icelsagadata-20&marketplace=amazon&region=US&placement=0141000031&asins=0141000031&linkId=bf26bfe36f1dfe90086711a1e0c096dd&show_border=true&link_opens_in_new_window=false&price_color=333333&title_color=870000&bg_color=ffffff">
+            </iframe>
     </div>
   </div>
 
