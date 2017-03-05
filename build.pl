@@ -256,7 +256,8 @@ foreach (@datafiles)
         symlink( $basename . ".html", $pagesdir . $basename);
         
         # Backward compatibility hack: basename minus lang suffix links to Icelandic version
-        if ($info{language_iso} eq 'is') {
+        if ($info{language_iso} eq 'is') 
+        {
             symlink( $basename . ".html", $pagesdir . $saganame);
         }
         
@@ -266,7 +267,8 @@ foreach (@datafiles)
         $html = $sdbxml->HTMLCitationRepresentationFromTemplate($citation_tpl);
         WriteFile( $pagesdir . $basename . ".cite.html", $html);
         
-        symlink($basename . ".cite.html", $pagesdir . $basename . ".cite");
+        my $bn = ($info{language_iso} eq 'is') ? $saganame : $basename;
+        symlink($basename . ".cite.html", $pagesdir . $bn . ".cite");
     }
     
     print "\n";
@@ -381,12 +383,15 @@ EOF
     my %bylang;
     foreach my $saganame (sort(keys(%saga_lang)))
     {
-    foreach my $lang(@{$saga_lang{$saganame}})
-    {
-        my $langname = $lang->{language};
-        my $isolang = $lang->{language_iso};
-        $bylang{$langname} .= "<li><img src=\"/images/flags/$isolang.gif\"> <a href=\"$saganame.$isolang\">$lang->{title}</a></li>\n";
-    }
+        foreach my $lang(@{$saga_lang{$saganame}})
+        {
+            my $langname = $lang->{language};
+            my $isolang = $lang->{language_iso};
+            my $f .= << "EOF";
+<li><img src="/images/flags/$isolang.gif"> <a href="$saganame.$isolang">$lang->{title}</a></li>
+EOF
+            $bylang{$langname} .= $f;
+        }
     }
 
     foreach my $lang(sort(keys(%bylang)))
@@ -439,6 +444,45 @@ EOF
         unlink($symlink);
         symlink($linksrc, $symlink);
      }
+}
+
+if ($opts{m} or $opts{a} or $opts{A}) 
+{
+    opendir(D, "$pagesdir") || die "Can't open directory $pagesdir: $!\n";
+    my @pages = readdir(D);
+    closedir(D);
+    
+    my $items_xml;
+    my $page_count = 0;
+    foreach my $page(@pages)
+    {
+        if ($page =~ m/$\.html/ or $page =~ m/^\./ or $page =~ m/$\.is/)
+        {
+            next;
+        }
+        my $xml = <<"EOF";
+    <url>
+        <loc>http://sagadb.org/$page</loc>
+        <changefreq>monthly</changefreq>
+    </url>
+EOF
+        $items_xml .= $xml;
+        $page_count += 1;
+    }
+    
+    my $sitemap = <<"EOF";
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+    <loc>http://sagadb.org/</loc>
+    <changefreq>weekly</changefreq>
+</url>
+$items_xml
+</urlset>
+EOF
+        
+    WriteFile($pagesdir . "sitemap.xml", $sitemap);
+    
+    print "\nCreated sitemap.xml for $page_count pages\n\n";
 }
 
 

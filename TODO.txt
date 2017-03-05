@@ -1,2 +1,2 @@
 * Add MOBI support
-* Fix swedish language issue
+* Fix Swedish language issue
