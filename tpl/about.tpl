@@ -28,4 +28,4 @@
 
 <h2>Maintainers</h2>
 
-<p>The Icelandic Saga Database is maintained and edited by <a href="mailto:sveinbjornt@gmail.com">Sveinbjorn Thordarson</a>.</p>
+<p>The Icelandic Saga Database is maintained and edited by <a href="mailto:sveinbjorn@sveinbjorn.org">Sveinbjorn Thordarson</a>.</p>

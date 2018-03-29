@@ -59,7 +59,7 @@
 
     <footer>
         The Icelandic Saga Database is maintained by
-        <a href="mailto:sveinbjornt@gmail.com">Sveinbjörn Þórðarson</a>. 
+        <a href="mailto:sveinbjorn@sveinbjorn.org">Sveinbjörn Þórðarson</a>. 
     </footer>
     
     <script>
