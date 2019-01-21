@@ -1,9 +1,10 @@
 
 <h1>Welcome to the Icelandic Saga Database</h1>
 
-<div class="small-12 medium-9 medium-centered columns">
+<!--<div class="small-12 medium-9 medium-centered columns">
         <p><small><strong>saga</strong> n : <em>a narrative telling the adventures of a hero or a family; originally, a story of the families that settled Iceland and their descendants.</em></small></p>
-</div>
+</div>-->
+<br>
 
 <img src="/images/spjot.jpg" width="250" height="207" style="float:right; margin-left: 15px; margin-bottom: 10px;">
 
