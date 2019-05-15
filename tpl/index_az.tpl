@@ -3,7 +3,7 @@
 <p>Below you will find links to all the major extant Icelandic sagas.  All the sagas are 
 available in Icelandic with modernised spelling, while many are available translated into
 English or other languages, indicated by the flags below the links.  The "ON" flag indicates
-that the saga is available with Old Norse spelling.</p> 
+that the saga is available with Old Icelandic orthography.</p> 
  
 <h2>By title</h2> 
 

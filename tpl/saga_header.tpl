@@ -6,7 +6,7 @@
 <a href="/files/pdf/%%basename%%.pdf">PDF</a> | 
 <a href="/files/epub/%%basename%%.epub">EPUB</a>
 -
-<a href="%%basename%%.cite">Source</a>
+<a href="%%basename%%.cite">Citation</a>
 <br>
 Versions: %%langlinks%%</p>
 <hr>
