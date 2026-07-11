@@ -264,7 +264,7 @@ sub CreateEPUBAtPath
     my $decoded_title = decode('UTF-8', $self->{metadata}->{title});    
     $epub->add_title($decoded_title);
     $epub->add_author("Anonymous");
-    $epub->add_contributor("Icelandic Saga Database", [fileas => "Icelandic Saga Database", role => "edt"]);
+    $epub->add_contributor("Icelandic Saga Database", fileas => "Icelandic Saga Database", role => "edt");
     $epub->add_identifier("http://sagadb.org/" . $self->{metadata}->{basename}, "url");
 
     # Add date of publication

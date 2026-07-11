@@ -130,7 +130,7 @@ foreach (@datafiles)
         $saga2langs_map{$fn} = \@a;
     }
     $suffix =~ s/^\.//;
-    push($saga2langs_map{$fn}, $suffix);
+    push(@{$saga2langs_map{$fn}}, $suffix);
 }
 
 # Iterate through files, convert
@@ -456,7 +456,7 @@ if ($opts{m} or $opts{a} or $opts{A})
     my $page_count = 0;
     foreach my $page(@pages)
     {
-        if ($page =~ m/$\.html/ or $page =~ m/^\./ or $page =~ m/$\.is/)
+        if ($page =~ m/\.html$/ or $page =~ m/^\./ or $page =~ m/\.is$/)
         {
             next;
         }

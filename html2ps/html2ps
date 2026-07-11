@@ -495,7 +495,8 @@ die "Ghostscript is required to generate DSC PostScript\n"
  if($opt_D && !$package{'Ghostscript'});
 die "Ghostscript is required to generate cross references\n"
  if($opt_R && !$package{'Ghostscript'});
-$tmpname=$posix?POSIX::tmpnam():"h2p_$$";
+use File::Temp;
+$tmpname=$posix?File::Temp::tmpnam():"h2p_$$";
 ($scr=$tmpname)=~/\w+$/;
 $tempdir=$`;
 
