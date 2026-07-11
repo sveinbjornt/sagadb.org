@@ -130,7 +130,7 @@ foreach (@datafiles)
         $saga2langs_map{$fn} = \@a;
     }
     $suffix =~ s/^\.//;
-    push($saga2langs_map{$fn}, $suffix);
+    push(@{$saga2langs_map{$fn}}, $suffix);
 }
 
 # Iterate through files, convert
@@ -202,7 +202,7 @@ foreach (@datafiles)
     if ($opts{p} or $opts{A})
     {
         print "\tCreating PDF file '$pdfpath'\n";
-        my $cmd = "/usr/bin/perl html2pdf.pl '$htmlpath' '$pdfpath'";
+        my $cmd = "/usr/bin/perl html2pdf-wp.pl '$htmlpath' '$pdfpath'";
         system($cmd);
     }
     
@@ -336,7 +336,7 @@ if ($opts{m} or $opts{a} or $opts{A})
           my $isolang = $lang->{language_iso};
           if ($isolang eq 'is') { $is_title = $lang->{title}; }
       
-          $li .= "<a href=\"$saganame.$isolang\"><img src=\"/images/flags/$isolang.gif\" class=\"flag\" alt=\"$lang->{title}\"></a>\n";
+          $li .= "<a href=\"$lang->{basename}\"><img src=\"/images/flags/$isolang.gif\" class=\"flag\" alt=\"$lang->{title}\"></a>\n";
       }
       $li = "<p>" . $li . "</p>";
       my $item = "<a href=\"$saganame.is\"><strong>$is_title</strong></a>\n$li\n\n\n";
@@ -388,7 +388,7 @@ EOF
             my $langname = $lang->{language};
             my $isolang = $lang->{language_iso};
             my $f .= << "EOF";
-<li><img src="/images/flags/$isolang.gif"> <a href="$saganame.$isolang">$lang->{title}</a></li>
+<li><img src="/images/flags/$isolang.gif"> <a href="$lang->{basename}">$lang->{title}</a></li>
 EOF
             $bylang{$langname} .= $f;
         }
@@ -456,7 +456,7 @@ if ($opts{m} or $opts{a} or $opts{A})
     my $page_count = 0;
     foreach my $page(@pages)
     {
-        if ($page =~ m/$\.html/ or $page =~ m/^\./ or $page =~ m/$\.is/)
+        if ($page =~ m/\.html$/ or $page =~ m/^\./ or $page =~ m/\.is$/)
         {
             next;
         }

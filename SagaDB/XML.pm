@@ -264,7 +264,7 @@ sub CreateEPUBAtPath
     my $decoded_title = decode('UTF-8', $self->{metadata}->{title});    
     $epub->add_title($decoded_title);
     $epub->add_author("Anonymous");
-    $epub->add_contributor("Icelandic Saga Database", [fileas => "Icelandic Saga Database", role => "edt"]);
+    $epub->add_contributor("Icelandic Saga Database", fileas => "Icelandic Saga Database", role => "edt");
     $epub->add_identifier("http://sagadb.org/" . $self->{metadata}->{basename}, "url");
 
     # Add date of publication
@@ -291,7 +291,9 @@ sub CreateEPUBAtPath
     # Source
     if (defined($self->{metadata}->{source}))
     {
-        $epub->add_source($self->{metadata}->{source});
+        # decode to a character string, like title/trans above, so EBook::EPUB
+        # does not double-encode any non-ASCII content
+        $epub->add_source(decode('UTF-8', $self->{metadata}->{source}));
     }
     
     my $chapter_dir = "/tmp/" . $self->{metadata}->{basename};

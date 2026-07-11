@@ -1,0 +1,93 @@
+/*
+ * pdf.css — Print stylesheet for SagaDB PDF generation via WeasyPrint.
+ *
+ * WeasyPrint consumes the standalone UTF-8 XHTML files in
+ * web/html/files/html/ directly, so every glyph (þ ð æ ö ǫ œ, curly
+ * quotes, em dashes) renders natively with no Latin-1 transcoding.
+ */
+
+@page {
+    size: A4;
+    margin: 2.2cm 2cm 2cm 2cm;
+
+    @top-center {
+        content: string(doctitle);
+        font-family: Georgia, "Times New Roman", serif;
+        font-style: italic;
+        font-size: 9pt;
+        color: #666;
+    }
+    @bottom-center {
+        content: counter(page);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 9pt;
+        color: #666;
+    }
+}
+
+/* No running header on the first (title) page */
+@page :first {
+    @top-center { content: none; }
+}
+
+html {
+    font-size: 11pt;
+}
+
+body {
+    font-family: "Lora", Georgia, "Times New Roman", serif;
+    line-height: 1.5;
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* Saga title — also captured into the running header via string-set */
+h1 {
+    string-set: doctitle content();
+    text-align: center;
+    font-size: 22pt;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 1cm 0 1.5cm 0;
+    hyphens: none;
+}
+
+/* Chapter headings — keep with the following paragraph, never split */
+h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    margin: 1.3em 0 0.4em 0;
+    break-after: avoid;
+    break-inside: avoid;
+    hyphens: none;
+}
+
+/* Body paragraphs: traditional book style — first paragraph of a
+   chapter flush left, continuation paragraphs indented. */
+p {
+    margin: 0;
+    text-indent: 1.4em;
+    orphans: 2;
+    widows: 2;
+}
+p.firstparagraph {
+    text-indent: 0;
+}
+
+/* Translator's note under the title */
+p.translation_note {
+    text-indent: 0;
+    text-align: center;
+    font-style: italic;
+    color: #444;
+    margin-bottom: 1.6em;
+}
+
+/* Skaldic verse / poetry: preserve line breaks, indent, no justify */
+p.poetry {
+    text-indent: 0;
+    text-align: left;
+    font-style: italic;
+    margin: 1em 0 1em 2.2em;
+    hyphens: none;
+}

@@ -33,8 +33,7 @@
 #
 
 use strict;
-use SagaDB::Util;
-use Shell qw(cp rm);
+use File::Copy qw(copy);
 
 my $html2ps = "html2ps/html2ps";
 my $html2psConfig = "html2ps/sagadbconf";
@@ -61,15 +60,17 @@ if ($infile !~ /\.html$/)
 
 my $tmp = '/tmp/sagadb_tmp.html';
 my $out_tmp = '/tmp/sagadb_tmp_out.html';
-cp($infile, $tmp);
+copy($infile, $tmp);
 if (! -e $tmp) { die("Could not create temporary file '$tmp'"); }
 system("iconv -c -f UTF-8 -t ISO-8859-1 '$tmp' > '$out_tmp'");
 
-# Run through html2ps tool
-my $cmd = "/usr/bin/perl $html2ps -f $html2psConfig '$out_tmp' | pstopdf -i -o '$outfile'";
+# Run through html2ps tool, then convert the PostScript to PDF with
+# Ghostscript's ps2pdf ('-' reads PostScript from stdin). Replaces the
+# macOS-only 'pstopdf' tool, which Apple removed in macOS 10.14+.
+my $cmd = "/usr/bin/perl $html2ps -f $html2psConfig '$out_tmp' | ps2pdf - '$outfile'";
 #print "Running command '$cmd'\n";
 system($cmd);
 
 # Remove temp files
-rm($tmp, $out_tmp);
+unlink($tmp, $out_tmp);
 
