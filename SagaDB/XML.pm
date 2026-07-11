@@ -291,7 +291,9 @@ sub CreateEPUBAtPath
     # Source
     if (defined($self->{metadata}->{source}))
     {
-        $epub->add_source($self->{metadata}->{source});
+        # decode to a character string, like title/trans above, so EBook::EPUB
+        # does not double-encode any non-ASCII content
+        $epub->add_source(decode('UTF-8', $self->{metadata}->{source}));
     }
     
     my $chapter_dir = "/tmp/" . $self->{metadata}->{basename};

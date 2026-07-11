@@ -202,7 +202,7 @@ foreach (@datafiles)
     if ($opts{p} or $opts{A})
     {
         print "\tCreating PDF file '$pdfpath'\n";
-        my $cmd = "/usr/bin/perl html2pdf.pl '$htmlpath' '$pdfpath'";
+        my $cmd = "/usr/bin/perl html2pdf-wp.pl '$htmlpath' '$pdfpath'";
         system($cmd);
     }
     
