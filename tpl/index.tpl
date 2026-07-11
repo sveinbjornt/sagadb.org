@@ -33,7 +33,7 @@
               <li><a href="http://sagnanet.is/">Sagnanet</a></li>
               <li><a href="http://www.snerpa.is/net/index.html">Netútgáfan</a></li>
               <li><a
-              href="http://www.heimskringla.no/enindex.php">Heimskringla.no</a></li>
+              href="http://www.heimskringla.no">Heimskringla.no</a></li>
               <li><a href="http://www.northvegr.org/">Northvegr.org</a></li>
               <li><a href="http://en.wikipedia.org/wiki/Template:Icelandic_Sagas">Wikipedia: Sagas</a></li>
               <li><a href="http://www.arnastofnun.is/">Árnastofnun</a></li>
