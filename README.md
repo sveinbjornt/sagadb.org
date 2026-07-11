@@ -15,4 +15,4 @@ The scripts and modules for working with the source XML files are written in Per
 
 All saga source texts are in the public domain.
 
-All code is BSD licensed.
+All code (very old and embarrassing) is BSD licensed.
