@@ -809,8 +809,8 @@
     <line>Great Athelstan victorious,</line>
     <line>Surely, I swear, all humbled</line>
     <line>To such high monarch yields.'</line>
-    <line>&lt;/blockquote&gt;  &lt;p&gt;But this is the burden in the poem:</line>
    </poetry>
+   <paragraph>But this is the burden in the poem:</paragraph>
    <poetry>
     <line>'Reindeer-trod hills obey</line>
     <line>Bold Athelstan's high sway.'</line>
@@ -1086,8 +1086,8 @@
    <paragraph>Said Arinbjorn: 'No one will call Eric a greater man for slaying a yeoman's son, a foreigner, who has freely come into his power. But if the king wishes to achieve greatness hereby, then will I help him in this, so that these tidings shall be thought more worthy of record; for I and Egil will now back each other, so that we must both be met at once. Thou wilt then, O king, dearly buy the life of Egil, when we be all laid dead on the field, I and my followers. Far other treatment should I have expected of thee, than that thou wouldst prefer seeing me laid dead on the earth to granting me the boon I crave of one man's life.'</paragraph>
    <paragraph>Then answered the king: 'A wondrous eager champion art thou, Arinbjorn, in this thy helping of Egil. Loth were I to do thee scathe, if it comes to this; if thou wilt rather give away thine own life than that he be slain. But sufficient are the charges against Egil, whatever I cause to be done with him.'</paragraph>
    <paragraph>And when the king had said this, then Egil advanced before him and began the poem, and recited in a loud voice, and at once won silence.</paragraph>
-   <paragraph>&lt;strong&gt;HEAD-RANSOM&lt;/strong&gt;</paragraph>
-   <paragraph>&lt;strong&gt;1.&lt;/strong&gt;</paragraph>
+   <paragraph>HEAD-RANSOM</paragraph>
+   <paragraph>1.</paragraph>
    <poetry>
     <line>'Westward I sailed the wave,</line>
     <line>Within me Odin gave</line>
@@ -1098,7 +1098,7 @@
     <line>My mind a galleon fraught</line>
     <line>With load of minstrel thought.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;2.&lt;/strong&gt;</paragraph>
+   <paragraph>2.</paragraph>
    <poetry>
     <line>'A prince doth hold me guest,</line>
     <line>Praise be his due confess'd:</line>
@@ -1109,7 +1109,7 @@
     <line>Silence I crave around,</line>
     <line>My song of praise is found.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;3.&lt;/strong&gt;</paragraph>
+   <paragraph>3.</paragraph>
    <poetry>
     <line>'Sire, mark the tale I tell,</line>
     <line>Such heed beseems thee well;</line>
@@ -1120,7 +1120,7 @@
     <line>But Odin saw alone</line>
     <line>Bodies before him strown.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;4.&lt;/strong&gt;</paragraph>
+   <paragraph>4.</paragraph>
    <poetry>
     <line>'Swell'd of swords the sound</line>
     <line>Smiting bucklers round,</line>
@@ -1131,7 +1131,7 @@
     <line>Iron hailstorm's song,</line>
     <line>Heavy, loud and long.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;5.&lt;/strong&gt;</paragraph>
+   <paragraph>5.</paragraph>
    <poetry>
     <line>'Lances, a woven fence,</line>
     <line>Well-ordered bristle dense;</line>
@@ -1142,14 +1142,14 @@
     <line>With war-fleet's thundering sound,</line>
     <line>With wounds and din around.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;6.&lt;/strong&gt;</paragraph>
+   <paragraph>6.</paragraph>
    <poetry>
     <line>'Of men many a rank</line>
     <line>Mid showering darts sank:</line>
     <line>Glory and fame</line>
     <line>Gat Eric's name.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;7.&lt;/strong&gt;</paragraph>
+   <paragraph>7.</paragraph>
    <poetry>
     <line>'More may yet be told,</line>
     <line>An men silence hold:</line>
@@ -1160,7 +1160,7 @@
     <line>Shivered swords with stroke</line>
     <line>On blue shield-rims broke.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;8.&lt;/strong&gt;</paragraph>
+   <paragraph>8.</paragraph>
    <poetry>
     <line>'Breast-plates ringing crashed,</line>
     <line>Burning helm-fire flashed,</line>
@@ -1171,14 +1171,14 @@
     <line>Baldric's crystal blade</line>
     <line>Bowed and prostrate laid.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;9.&lt;/strong&gt;</paragraph>
+   <paragraph>9.</paragraph>
    <poetry>
     <line>'Spears crossing dashed,</line>
     <line>Sword-edges clashed:</line>
     <line>Glory and fame</line>
     <line>Gat Eric's name.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;10.&lt;/strong&gt;</paragraph>
+   <paragraph>10.</paragraph>
    <poetry>
     <line>'Red blade the king did wield,</line>
     <line>Ravens flocked o'er the field.</line>
@@ -1189,7 +1189,7 @@
     <line>For erne of downtrod dead</line>
     <line>Dainty meal was spread.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;11.&lt;/strong&gt;</paragraph>
+   <paragraph>11.</paragraph>
    <poetry>
     <line>'Soared battle-cranes</line>
     <line>O'er corse-strown lanes,</line>
@@ -1200,14 +1200,14 @@
     <line>Grim raven's beak</line>
     <line>Blood-fountains break.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;12.&lt;/strong&gt;</paragraph>
+   <paragraph>12.</paragraph>
    <poetry>
     <line>'Axe furnished feast</line>
     <line>For Ogress' beast:</line>
     <line>Eric on the wave</line>
     <line>To wolves flesh-banquet gave.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;13.&lt;/strong&gt;</paragraph>
+   <paragraph>13.</paragraph>
    <poetry>
     <line>'Javelins flying sped,</line>
     <line>Peace affrighted fled;</line>
@@ -1218,7 +1218,7 @@
     <line>Archers' strings loud sang,</line>
     <line>Arrows forward sprang.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;14.&lt;/strong&gt;</paragraph>
+   <paragraph>14.</paragraph>
    <poetry>
     <line>'He back his buckler flings</line>
     <line>From arm beset with rings,</line>
@@ -1229,14 +1229,14 @@
     <line>East o'er billows came</line>
     <line>Eric's sounding name.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;15.&lt;/strong&gt;</paragraph>
+   <paragraph>15.</paragraph>
    <poetry>
     <line>'Bent the king his yew,</line>
     <line>Bees wound-bearing flew:</line>
     <line>Eric on the wave</line>
     <line>To wolves flesh-banquet gave.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;16.&lt;/strong&gt;</paragraph>
+   <paragraph>16.</paragraph>
    <poetry>
     <line>'Yet to make more plain</line>
     <line>I to men were fain</line>
@@ -1247,7 +1247,7 @@
     <line>On ships' shielded side</line>
     <line>Streams the battle-tide.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;17.&lt;/strong&gt;</paragraph>
+   <paragraph>17.</paragraph>
    <poetry>
     <line>'Gems from wrist he gives,</line>
     <line>Glittering armlets rives:</line>
@@ -1258,7 +1258,7 @@
     <line>Prince bestoweth scorning</line>
     <line>Pebbles hand-adorning.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;18.&lt;/strong&gt;</paragraph>
+   <paragraph>18.</paragraph>
    <poetry>
     <line>'Foemen might not stand</line>
     <line>For his deathful brand;</line>
@@ -1269,7 +1269,7 @@
     <line>Proud Eric prince renowned;</line>
     <line>And praise his feats hath crowned.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;19.&lt;/strong&gt;</paragraph>
+   <paragraph>19.</paragraph>
    <poetry>
     <line>'Monarch, at thy will</line>
     <line>Judge my minstrel skill:</line>
@@ -1280,7 +1280,7 @@
     <line>Draught of Odin's wave</line>
     <line>Due to warrior brave.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;20.&lt;/strong&gt;</paragraph>
+   <paragraph>20.</paragraph>
    <poetry>
     <line>'Silence I have broken,</line>
     <line>A sovereign's glory spoken:</line>
@@ -1612,8 +1612,8 @@
    <paragraph>Then spoke Thorgerdr: 'What counsel shall we take now? This our purpose is defeated. Now I would fain, father, that we should lengthen our lives, so that you may compose a funeral poem on Bodvar, and I will grave it on a wooden roller; after that we can die, if we like. Hardly, I think, can Thorstein your son compose a poem on Bodvar; but it were unseemly that he should not have funeral rites. Though I do not think that we two shall sit at the drinking when the funeral feast is held.' Egil said that it was not to be expected that he could now compose, though he were to attempt it. 'However, I will try this,' said he.</paragraph>
    <paragraph>Egil had had another son named Gunnar, who had died a short time before.</paragraph>
    <paragraph>So then Egil began the poem, and this is the beginning.</paragraph>
-   <paragraph>&lt;strong&gt;SONA-TORREK (SONS' LOSS).&lt;/strong&gt;</paragraph>
-   <paragraph>&lt;strong&gt;1.&lt;/strong&gt;</paragraph>
+   <paragraph>SONA-TORREK (SONS' LOSS).</paragraph>
+   <paragraph>1.</paragraph>
    <poetry>
     <line>'Much doth it task me</line>
     <line>My tongue to move,</line>
@@ -1624,7 +1624,7 @@
     <line>A draught drawn not lightly</line>
     <line>From deep thought's dwelling.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;2.&lt;/strong&gt;</paragraph>
+   <paragraph>2.</paragraph>
    <poetry>
     <line>'Forth it flows but hardly;</line>
     <line>For within my breast</line>
@@ -1635,7 +1635,7 @@
     <line>Goodly treasure, stolen</line>
     <line>From Giant-land of yore.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;3.&lt;/strong&gt;</paragraph>
+   <paragraph>3.</paragraph>
    <poetry>
     <line>'He, who so blameless</line>
     <line>Bore him in life,</line>
@@ -1646,7 +1646,7 @@
     <line>Smite upon the grave-gate</line>
     <line>Of my sire and son.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;4.&lt;/strong&gt;</paragraph>
+   <paragraph>4.</paragraph>
    <poetry>
     <line>'Dwindling now my kindred</line>
     <line>Draw near to their end,</line>
@@ -1657,7 +1657,7 @@
     <line>Body of kinsman</line>
     <line>On funeral bier.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;5.&lt;/strong&gt;</paragraph>
+   <paragraph>5.</paragraph>
    <poetry>
     <line>'Of father fallen</line>
     <line>First I may tell;</line>
@@ -1668,7 +1668,7 @@
     <line>A wood to bloom leafy</line>
     <line>With words of song.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;6.&lt;/strong&gt;</paragraph>
+   <paragraph>6.</paragraph>
    <poetry>
     <line>'Most woful the breach,</line>
     <line>Where the wave in-brake</line>
@@ -1679,7 +1679,7 @@
     <line>The gap of son rent</line>
     <line>By the greedy surge.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;7.&lt;/strong&gt;</paragraph>
+   <paragraph>7.</paragraph>
    <poetry>
     <line>'Me Ran, the sea-queen,</line>
     <line>Roughly hath shaken:</line>
@@ -1690,7 +1690,7 @@
     <line>Strand of mine own twisting</line>
     <line>So stout and strong.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;8.&lt;/strong&gt;</paragraph>
+   <paragraph>8.</paragraph>
    <poetry>
     <line>'Sure, if sword could venge</line>
     <line>Such cruel wrong,</line>
@@ -1701,7 +1701,7 @@
     <line>'Gainst him and his sea-brood</line>
     <line>Battling would I go.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;9.&lt;/strong&gt;</paragraph>
+   <paragraph>9.</paragraph>
    <poetry>
     <line>'But I in no wise</line>
     <line>Boast, as I ween,</line>
@@ -1712,7 +1712,7 @@
     <line>How the old man's lot</line>
     <line>Helpless is and lone.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;10.&lt;/strong&gt;</paragraph>
+   <paragraph>10.</paragraph>
    <poetry>
     <line>'Me hath the main</line>
     <line>Of much bereaved;</line>
@@ -1723,7 +1723,7 @@
     <line>Hied him from life</line>
     <line>To heaven's glad realm.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;11.&lt;/strong&gt;</paragraph>
+   <paragraph>11.</paragraph>
    <poetry>
     <line>'Full surely I know,</line>
     <line>In my son was waxing</line>
@@ -1734,7 +1734,7 @@
     <line>And Odin laid hand</line>
     <line>On his liegeman true.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;12.&lt;/strong&gt;</paragraph>
+   <paragraph>12.</paragraph>
    <poetry>
     <line>'Willing he followed</line>
     <line>His father's word,</line>
@@ -1745,7 +1745,7 @@
     <line>Of my power and rule</line>
     <line>The prop and the stay.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;13.&lt;/strong&gt;</paragraph>
+   <paragraph>13.</paragraph>
    <poetry>
     <line>'Oft to my mind</line>
     <line>My loss doth come,</line>
@@ -1756,7 +1756,7 @@
     <line>Thereon with much searching</line>
     <line>My soul doth muse:</line>
    </poetry>
-   <paragraph>&lt;strong&gt;14.&lt;/strong&gt;</paragraph>
+   <paragraph>14.</paragraph>
    <poetry>
     <line>'Who staunch stands by me</line>
     <line>In stress of fight,</line>
@@ -1767,7 +1767,7 @@
     <line>Weak-winged I fly,</line>
     <line>Whom friends all fail.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;15.&lt;/strong&gt;</paragraph>
+   <paragraph>15.</paragraph>
    <poetry>
     <line>'Son's place to his sire</line>
     <line>(Saith a proverb true)</line>
@@ -1778,7 +1778,7 @@
     <line>To brother can stand</line>
     <line>In brother's stead.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;16.&lt;/strong&gt;</paragraph>
+   <paragraph>16.</paragraph>
    <poetry>
     <line>'O'er all our ice-fields,</line>
     <line>Our northern snows,</line>
@@ -1789,7 +1789,7 @@
     <line>A brother's body</line>
     <line>Barter for gold.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;17.&lt;/strong&gt;</paragraph>
+   <paragraph>17.</paragraph>
    <poetry>
     <line>'Unpleasing to me</line>
     <line>Our people's mood,</line>
@@ -1800,7 +1800,7 @@
     <line>My good wife's child</line>
     <line>To his glorious kin.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;18.&lt;/strong&gt;</paragraph>
+   <paragraph>18.</paragraph>
    <poetry>
     <line>'Odin, mighty monarch,</line>
     <line>Of minstrel mead the lord,</line>
@@ -1811,7 +1811,7 @@
     <line>Sinks my drooping brow,</line>
     <line>Seat of sight and thought.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;19.&lt;/strong&gt;</paragraph>
+   <paragraph>19.</paragraph>
    <poetry>
     <line>'Fierce fire of sickness</line>
     <line>First from my home</line>
@@ -1822,7 +1822,7 @@
     <line>In deeds unblemished,</line>
     <line>In words unblamed.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;20.&lt;/strong&gt;</paragraph>
+   <paragraph>20.</paragraph>
    <poetry>
     <line>'Still do I mind me,</line>
     <line>When the Friend of men</line>
@@ -1833,7 +1833,7 @@
     <line>Of my true wife born</line>
     <line>A branch so fair.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;21.&lt;/strong&gt;</paragraph>
+   <paragraph>21.</paragraph>
    <poetry>
     <line>'Once bare I goodwill</line>
     <line>To the great spear-lord,</line>
@@ -1844,7 +1844,7 @@
     <line>Broke faith and friendship</line>
     <line>False in my need.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;22.&lt;/strong&gt;</paragraph>
+   <paragraph>22.</paragraph>
    <poetry>
     <line>'Now victim and worship</line>
     <line>To Vilir's brother,</line>
@@ -1855,7 +1855,7 @@
     <line>Some boot for bale,</line>
     <line>If all boons I tell.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;23.&lt;/strong&gt;</paragraph>
+   <paragraph>23.</paragraph>
    <poetry>
     <line>'Yea he, the wolf-tamer,</line>
     <line>The war-god skilful,</line>
@@ -1866,7 +1866,7 @@
     <line>And force him to face me</line>
     <line>As foeman in fight.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;24.&lt;/strong&gt;</paragraph>
+   <paragraph>24.</paragraph>
    <poetry>
     <line>'Hard am I beset;</line>
     <line>Whom Hela, the sister</line>
@@ -1883,8 +1883,8 @@
    <paragraph>Long time did Egil dwell at Borg, and became an old man. But it is not told that he had lawsuits with any here in the land; nor is there a word of single combats, or war and slaughter of his after he settled down here in Iceland. They say that Egil never went abroad out of Iceland after the events already related. And for this the main cause was that Egil might not be in Norway, by reason of the charges which (as has been told before) the kings there deemed they had against him. He kept house in munificent style, for there was no lack of money, and his disposition led him to munificence.</paragraph>
    <paragraph>King Hacon, Athelstan's foster-son, long ruled over Norway; but in the latter part of his life Eric's sons came to Norway and strove with him for the kingdom; and they had battles together, wherein Hacon ever won the victory. The last battle was fought in Hordaland, on Stord-island, at Fitjar: there king Hacon won the victory, but also got his death-wound. After that Eric's sons took the kingdom in Norway. </paragraph>
    <paragraph>Lord Arinbjorn was with Harold Eric's son, and was made his counsellor, and had of him great honours. He was commander of his forces and defender of the land. A great warrior was Arinbjorn, and a victorious. He was governor of the Firth folk. Egil Skallagrimsson heard these tidings of the change of kings in Norway, and therewith how Arinbjorn had returned to his estates in Norway, and was there in great honour. Then Egil composed a poem about Arinbjorn, whereof this is the beginning:</paragraph>
-   <paragraph>&lt;strong&gt;ARINBJORN'S EPIC, OR A PART THEREOF.&lt;/strong&gt;</paragraph>
-   <paragraph>&lt;strong&gt;1.&lt;/strong&gt;</paragraph>
+   <paragraph>ARINBJORN'S EPIC, OR A PART THEREOF.</paragraph>
+   <paragraph>1.</paragraph>
    <poetry>
     <line>'For generous prince</line>
     <line>Swift praise I find,</line>
@@ -1895,7 +1895,7 @@
     <line>But silence keep</line>
     <line>On slander's lies.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;2.&lt;/strong&gt;</paragraph>
+   <paragraph>2.</paragraph>
    <poetry>
     <line>'For fabling braggarts</line>
     <line>Full am I of scorn,</line>
@@ -1906,7 +1906,7 @@
     <line>A gallant minstrel</line>
     <line>Of guileless mood.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;3.&lt;/strong&gt;</paragraph>
+   <paragraph>3.</paragraph>
    <poetry>
     <line>'Erewhile the anger</line>
     <line>Of Yngling's son</line>
@@ -1917,7 +1917,7 @@
     <line>A lord right noble</line>
     <line>I rode to seek.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;4.&lt;/strong&gt;</paragraph>
+   <paragraph>4.</paragraph>
    <poetry>
     <line>'There sate in might</line>
     <line>The monarch strong,</line>
@@ -1928,7 +1928,7 @@
     <line>Within York city</line>
     <line>Wielded he power.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;5.&lt;/strong&gt;</paragraph>
+   <paragraph>5.</paragraph>
    <poetry>
     <line>'That moon-like brightness</line>
     <line>Might none behold,</line>
@@ -1939,7 +1939,7 @@
     <line>Shot starry radiance</line>
     <line>Stern and keen.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;6.&lt;/strong&gt;</paragraph>
+   <paragraph>6.</paragraph>
    <poetry>
     <line>'Yet I to this ruler</line>
     <line>Of fishful seas</line>
@@ -1950,7 +1950,7 @@
     <line>Each listening ear-mouth</line>
     <line>Eagerly drank.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;7.&lt;/strong&gt;</paragraph>
+   <paragraph>7.</paragraph>
    <poetry>
     <line>'Not beauteous in seeming</line>
     <line>My bardic fee</line>
@@ -1961,7 +1961,7 @@
     <line>For mead of Odin</line>
     <line>From monarch gat.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;8.&lt;/strong&gt;</paragraph>
+   <paragraph>8.</paragraph>
    <poetry>
     <line>'Thankful I took it,</line>
     <line>And therewithal</line>
@@ -1972,7 +1972,7 @@
     <line>The poem of praise</line>
     <line>To princely knees.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;9.&lt;/strong&gt;</paragraph>
+   <paragraph>9.</paragraph>
    <poetry>
     <line>'Tooth-fence took I,</line>
     <line>And tongue likewise,</line>
@@ -1983,7 +1983,7 @@
     <line>The gift then given</line>
     <line>By glorious king.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;10.&lt;/strong&gt;</paragraph>
+   <paragraph>10.</paragraph>
    <poetry>
     <line>'There a staunch stay</line>
     <line>Stood by my side,</line>
@@ -1994,7 +1994,7 @@
     <line>High-couraged ever</line>
     <line>In counsels bold.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;11.&lt;/strong&gt;</paragraph>
+   <paragraph>11.</paragraph>
    <poetry>
     <line>'Arinbjorn</line>
     <line>Alone us saved</line>
@@ -2005,7 +2005,7 @@
     <line>Within that palace</line>
     <line>Of warlike prince.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;12.&lt;/strong&gt;</paragraph>
+   <paragraph>12.</paragraph>
    <poetry>
     <line>'Of the stay of our house</line>
     <line>Still spake he truth,</line>
@@ -2016,7 +2016,7 @@
     <line>Slew for a slander,</line>
     <line>But honoured slain.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;13.&lt;/strong&gt;</paragraph>
+   <paragraph>13.</paragraph>
    <poetry>
     <line>'Wrong were it if he</line>
     <line>Who wrought me good,</line>
@@ -2027,7 +2027,7 @@
     <line>To the surge rough-ridden</line>
     <line>By sea-kings' steeds.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;14.&lt;/strong&gt;</paragraph>
+   <paragraph>14.</paragraph>
    <poetry>
     <line>'False to my friend</line>
     <line>Were I fairly called,</line>
@@ -2038,7 +2038,7 @@
     <line>If I for such good</line>
     <line>Gave nought again.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;15.&lt;/strong&gt;</paragraph>
+   <paragraph>15.</paragraph>
    <poetry>
     <line>'Now better seeth</line>
     <line>The bard to climb</line>
@@ -2049,7 +2049,7 @@
     <line>The laud and honour</line>
     <line>Of high-born chief.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;16.&lt;/strong&gt;</paragraph>
+   <paragraph>16.</paragraph>
    <poetry>
     <line>'Now shall my voice-plane</line>
     <line>Shape into song</line>
@@ -2060,7 +2060,7 @@
     <line>Yea, threefold praises</line>
     <line>Of Thorir's son.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;17.&lt;/strong&gt;</paragraph>
+   <paragraph>17.</paragraph>
    <poetry>
     <line>'First tell I forth</line>
     <line>What far is known,</line>
@@ -2071,7 +2071,7 @@
     <line>Bjorn of the hearth-fire</line>
     <line>The birchwood's bane.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;18.&lt;/strong&gt;</paragraph>
+   <paragraph>18.</paragraph>
    <poetry>
     <line>'Folk bear witness</line>
     <line>With wond'ring praise,</line>
@@ -2082,7 +2082,7 @@
     <line>Freely and fully</line>
     <line>By Frey and Njord.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;19.&lt;/strong&gt;</paragraph>
+   <paragraph>19.</paragraph>
    <poetry>
     <line>'To him, high scion</line>
     <line>Of Hroald's tree,</line>
@@ -2093,7 +2093,7 @@
     <line>By all wide ways</line>
     <line>'Neath windy heaven.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;20.&lt;/strong&gt;</paragraph>
+   <paragraph>20.</paragraph>
    <poetry>
     <line>'Above his ears</line>
     <line>Around his brow</line>
@@ -2104,7 +2104,7 @@
     <line>The warrior's friend,</line>
     <line>The weakling's aid.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;21.&lt;/strong&gt;</paragraph>
+   <paragraph>21.</paragraph>
    <poetry>
     <line>'That mark he hitteth</line>
     <line>That most men miss;</line>
@@ -2115,7 +2115,7 @@
     <line>Nor easily shafted</line>
     <line>Are all men's spears.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;22.&lt;/strong&gt;</paragraph>
+   <paragraph>22.</paragraph>
    <poetry>
     <line>'Out of the mansion</line>
     <line>Of Arinbjorn,</line>
@@ -2126,7 +2126,7 @@
     <line>None with his axe-hand</line>
     <line>Ungifted hie.</line>
    </poetry>
-   <paragraph>&lt;strong&gt;23.&lt;/strong&gt;</paragraph>
+   <paragraph>23.</paragraph>
    <poetry>
     <line>'Hater of money</line>
     <line>Is he of the Firths,</line>
@@ -2134,7 +2134,7 @@
     <line>Of Draupnir born.</line>
     <line>. . . . .</line>
    </poetry>
-   <paragraph>&lt;strong&gt;24.&lt;/strong&gt;</paragraph>
+   <paragraph>24.</paragraph>
    <poetry>
     <line>'Rings he scatters,</line>
     <line>Riches he squanders,</line>
@@ -2142,7 +2142,7 @@
     <line>An enemy still.</line>
     <line>. . . . .</line>
    </poetry>
-   <paragraph>&lt;strong&gt;25.&lt;/strong&gt;</paragraph>
+   <paragraph>25.</paragraph>
    <poetry>
     <line>'Long course of life</line>
     <line>His lot hath been,</line>
@@ -2150,7 +2150,7 @@
     <line>Bereft of peace.</line>
     <line>. . . . .</line>
    </poetry>
-   <paragraph>&lt;strong&gt;26.&lt;/strong&gt;</paragraph>
+   <paragraph>26.</paragraph>
    <poetry>
     <line>'Early waked I,</line>
     <line>Word I gathered,</line>

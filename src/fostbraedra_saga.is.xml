@@ -257,7 +257,7 @@
    </poetry>
   </chapter>
   <chapter number="8" title="">
-   <paragraph>Skip stóð uppi í Norðurá í Flóa. Þar var þá skipahöfn tíð. Í því skipi keypti Þorgils og Illugi bróðir hans á laun til handa Þorgeiri og létu búa um varnað að þeim hluta er Þorgeir átti í skipinu. Þeir Þorgils og Illugi riðu eigi til öndverðs þings um sumarið því að þeir vildu eigi fyrr fara um Breiðafjarðardali en Þorsteinn Kuggason væri riðinn úr héraði til þings því að þeir vildu þá fylgja Þorgeiri til skips, skógarmanni Þorsteins.      &lt;i&gt;(Úr Flateyjarbók)&lt;/i&gt;</paragraph>
+   <paragraph>Skip stóð uppi í Norðurá í Flóa. Þar var þá skipahöfn tíð. Í því skipi keypti Þorgils og Illugi bróðir hans á laun til handa Þorgeiri og létu búa um varnað að þeim hluta er Þorgeir átti í skipinu. Þeir Þorgils og Illugi riðu eigi til öndverðs þings um sumarið því að þeir vildu eigi fyrr fara um Breiðafjarðardali en Þorsteinn Kuggason væri riðinn úr héraði til þings því að þeir vildu þá fylgja Þorgeiri til skips, skógarmanni Þorsteins.      (Úr Flateyjarbók)</paragraph>
    <paragraph>([Nú fréttu þeir Þorgísl og Illugi að Þorsteinn var til þings riðinn, ríða nú heiman með sex tigu manna. Þeir voru þar í för fóstbræður Þorgeir og Þormóður. Ríða nú undan flokkarnir. En er þeir fóstbræður riðu inn að á þeirri er heitir Drífandi, hún er í Gilsfirði, þá mælti Þorgeir: "Hvar veistu aðra tvo fóstbræður, þá að okkur séu jafnir að hraustleika og framgöngu?"</paragraph>
    <paragraph>Þormóður mælti: "Finnast ætla eg munu ef víða er leitað."</paragraph>
    <paragraph>Þorgeir mælti: "Það ætla eg að hvergi finnist á Íslandi. En hvað ætlar þú hvor okkar muni af öðrum bera ef við reynum með okkur?"</paragraph>
@@ -901,8 +901,9 @@
    <paragraph>Skúfur mælti: "Víst hefir þig eigi til einskis undan rekið á Garðaþingi er þú hefir orðið á einu kveldi bani þriggja kappa og kynstórra manna."</paragraph>
    <paragraph>Þormóður mælti: "Það eitt kom mér í hug áður þið komuð hingað að eg mundi hér líf mitt láta í skerinu. En nú þykir mér eigi örvænt að eg verði græddur og má þá enn vera að eg hafi undan rekið til nokkurs."</paragraph>
    <paragraph>Þeir spyrja að um samaneign þeirra Falgeirs.</paragraph>
+   <paragraph>Þormóður kvað þá vísu:</paragraph>
    <poetry>
-    <line>Þormóður kvað þá vísu:  &lt;blockquote&gt; &lt;p&gt;Skopti eg enn þá er uppi</line>
+    <line>Skopti eg enn þá er uppi</line>
     <line>undarlegt á sundi,</line>
     <line>hrókr dó heimskr við klæki,</line>
     <line>hans rassaklof gandi.</line>
