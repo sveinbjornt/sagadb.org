@@ -79,11 +79,29 @@ sub HTMLCitationRepresentationFromTemplate
     
     my $html_template = ReadFile($tpl) or die("Couldn't read template $tpl");
 
+    # Generation timestamp for the comment (not a metadata field)
+    my ($long_date, $iso_timestamp) = GetDate();
+    $html_template =~ s/%%datecreated%%/$iso_timestamp/gi;
+
+    # Build the optional translator clause for the citation sentence so that
+    # original-language texts (no translator) don't get a dangling comma.
+    my $trans_clause = (defined($metadata{trans}) and $metadata{trans} ne '')
+                       ? ", $metadata{trans}" : "";
+    $html_template =~ s/%%trans_clause%%/$trans_clause/gi;
+
     # Replace all variables in template w. metadata info
     foreach my $key(sort(keys(%metadata)))
     {
         $html_template =~ s/%%$key%%/$metadata{$key}/gi;
     }
+
+    # Drop any table rows whose field was absent from the metadata (i.e. still
+    # contain an unfilled %%...%% placeholder), e.g. Translator / Translation
+    # date / Title of original for original-language texts.
+    $html_template =~ s{[ \t]*<tr>(?:(?!</tr>).)*?%%\w+%%.*?</tr>\s*}{}gs;
+
+    # Safety net: blank any remaining unfilled placeholders.
+    $html_template =~ s/%%\w+%%//g;
 
     return $html_template;
 }

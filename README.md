@@ -13,6 +13,12 @@ The data files are stored as XML in the `src` directory, and can be converted in
 
 The scripts and modules for working with the source XML files are written in Perl and use `XML::Parser::Lite::Tree` and `EBook::EPUB` modules.
 
+To build, clone repository and run the following command from root directory:
+
+```bash
+perl -I. build.pl -A -n all
+```
+
 All saga source texts are in the public domain.
 
 All code (very old and embarrassing) is BSD licensed.
