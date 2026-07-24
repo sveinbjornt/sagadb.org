@@ -10,10 +10,10 @@ All the sagas in strict XHTML (UTF-8)</p>
 All the sagas as plain text in UTF-8 encoding</p>
 
 <p><a href="/files/zip/all_sagas_pdf.zip"><strong>PDF</strong></a><br>
-All the sagas as PDF documents with a content index.</p>
+All the sagas as PDF documents.</p>
 
 <p><a href="/files/zip/all_sagas_epub.zip"><strong>EPUB</strong></a><br>
-All sagas in EPUB format for electronic book-readers</p>
+All sagas in EPUB format for electronic book readers</p>
 
 <p><a href="https://github.com/sveinbjornt/sagadb.org"><strong>TOOLS</strong></a><br>
 Build tools and XML source files for the sagas <a href="https://github.com/sveinbjornt/sagadb.org">on GitHub</a>.</p>
